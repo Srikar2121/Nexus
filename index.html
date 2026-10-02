@@ -1,23 +1,23 @@
-```html
 <!-- Nexus -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#05070d">
-  <title>Project 09</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus</title>
 
   <style>
     :root {
       --bg: #05070d;
-      --panel: rgba(255,255,255,.055);
-      --border: rgba(255,255,255,.1);
-      --text: #eef3ff;
-      --muted: #7f8aa3;
+      --panel: rgba(12, 16, 28, 0.72);
+      --panel-strong: rgba(16, 21, 36, 0.92);
+      --border: rgba(255,255,255,0.08);
+      --text: #f4f7ff;
+      --muted: #8791a8;
       --accent: #7c9cff;
-      --accent2: #9b7cff;
-      --good: #69f0ae;
+      --accent2: #b27cff;
+      --good: #63f5b1;
+      --danger: #ff6b81;
     }
 
     * {
@@ -33,12 +33,19 @@
     body {
       min-height: 100vh;
       overflow-x: hidden;
-      color: var(--text);
       background:
-        radial-gradient(circle at 50% 35%, rgba(100,120,255,.11), transparent 30%),
-        radial-gradient(circle at 15% 85%, rgba(150,80,255,.08), transparent 30%),
+        radial-gradient(circle at 50% 20%, rgba(100, 120, 255, 0.09), transparent 30%),
+        radial-gradient(circle at 20% 80%, rgba(178, 124, 255, 0.06), transparent 25%),
         var(--bg);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
 
     button,
@@ -48,10 +55,10 @@
     }
 
     button {
+      border: 0;
       cursor: pointer;
+      color: inherit;
     }
-
-    /* ---------- BACKGROUND ---------- */
 
     #stars {
       position: fixed;
@@ -65,51 +72,29 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 10;
-      opacity: .025;
+      z-index: 20;
+      opacity: 0.025;
       background-image:
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          #fff 3px
-        );
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
     }
 
-    .orbital-glow {
-      position: fixed;
-      width: 520px;
-      height: 520px;
-      border-radius: 50%;
-      left: 50%;
-      top: 42%;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(
-        circle,
-        rgba(124,156,255,.14),
-        transparent 68%
-      );
-      filter: blur(25px);
-      pointer-events: none;
-      z-index: -2;
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 70px 1fr;
     }
-
-    /* ---------- HEADER ---------- */
 
     header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 74px;
-      padding: 0 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 28px;
       border-bottom: 1px solid var(--border);
-      background: rgba(5,7,13,.68);
-      backdrop-filter: blur(22px);
-      z-index: 20;
+      background: rgba(5, 7, 13, 0.7);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .brand {
@@ -117,17 +102,20 @@
       align-items: center;
       gap: 12px;
       font-weight: 800;
-      letter-spacing: 2px;
+      letter-spacing: 0.14em;
+      font-size: 14px;
     }
 
-    .brand-mark {
-      width: 32px;
-      height: 32px;
-      display: grid;
-      place-items: center;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow: 0 0 25px rgba(124,156,255,.35);
+    .brand-orb {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, #fff, var(--accent) 25%, var(--accent2) 60%, transparent 70%);
+      box-shadow:
+        0 0 18px rgba(124,156,255,.8),
+        0 0 45px rgba(178,124,255,.25);
+      animation: breathe 3s ease-in-out infinite;
     }
 
     .status {
@@ -135,7 +123,8 @@
       align-items: center;
       gap: 8px;
       color: var(--muted);
-      font-size: .8rem;
+      font-size: 12px;
+      letter-spacing: 0.12em;
     }
 
     .status-dot {
@@ -146,93 +135,77 @@
       box-shadow: 0 0 12px var(--good);
     }
 
-    /* ---------- LAYOUT ---------- */
-
-    .app {
-      min-height: 100vh;
-      padding: 105px 28px 35px;
+    .layout {
       display: grid;
-      grid-template-columns: 230px 1fr 250px;
-      gap: 22px;
-      max-width: 1500px;
-      margin: auto;
+      grid-template-columns: 230px minmax(0, 1fr) 250px;
+      min-height: calc(100vh - 70px);
     }
-
-    .panel {
-      border: 1px solid var(--border);
-      background: var(--panel);
-      backdrop-filter: blur(18px);
-      border-radius: 22px;
-    }
-
-    /* ---------- SIDEBAR ---------- */
 
     aside {
-      padding: 18px;
-      height: calc(100vh - 140px);
-      position: sticky;
-      top: 105px;
+      border-right: 1px solid var(--border);
+      background: rgba(7, 10, 18, 0.5);
+      padding: 22px 16px;
+    }
+
+    .right-panel {
+      border-left: 1px solid var(--border);
+      border-right: 0;
     }
 
     .side-title {
-      font-size: .72rem;
-      color: var(--muted);
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      margin: 8px 8px 15px;
+      letter-spacing: .18em;
+      color: var(--muted);
+      margin-bottom: 12px;
     }
 
-    .side-button {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 7px;
-      border: 1px solid transparent;
-      border-radius: 12px;
+    .nav {
+      display: grid;
+      gap: 7px;
+    }
+
+    .nav button {
+      text-align: left;
+      padding: 12px 13px;
+      border-radius: 11px;
       background: transparent;
       color: var(--muted);
-      text-align: left;
-      transition: .25s;
+      transition: .2s ease;
     }
 
-    .side-button:hover,
-    .side-button.active {
+    .nav button:hover,
+    .nav button.active {
+      background: rgba(124,156,255,.09);
       color: var(--text);
-      background: rgba(255,255,255,.06);
-      border-color: var(--border);
+      transform: translateX(2px);
     }
 
-    .new-btn {
-      margin-bottom: 25px;
-      color: white;
-      background: linear-gradient(
-        135deg,
-        rgba(124,156,255,.25),
-        rgba(155,124,255,.2)
-      );
-      border-color: rgba(124,156,255,.25);
-    }
-
-    /* ---------- MAIN ---------- */
-
-    main {
-      min-width: 0;
-    }
-
-    .hero {
-      min-height: 370px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+    .main {
       position: relative;
+      padding: 38px;
       overflow: hidden;
     }
 
-    .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      letter-spacing: -3px;
-      margin-bottom: 12px;
+    .hero {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 7vw, 90px);
+      line-height: .95;
+      letter-spacing: -.06em;
+      margin-bottom: 18px;
       background: linear-gradient(
         135deg,
         #fff,
@@ -240,234 +213,289 @@
         #b496ff
       );
       -webkit-background-clip: text;
+      background-clip: text;
       color: transparent;
     }
 
-    .hero p {
-      max-width: 560px;
+    .subtitle {
+      max-width: 650px;
+      margin: 0 auto;
       color: var(--muted);
       line-height: 1.7;
+      font-size: 15px;
     }
 
-    /* ---------- CORE ---------- */
+    .core-wrap {
+      height: 380px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      margin: 18px 0;
+    }
 
     .core {
-      width: 180px;
-      height: 180px;
-      margin-bottom: 35px;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
       position: relative;
       display: grid;
       place-items: center;
+      background:
+        radial-gradient(
+          circle at 38% 32%,
+          #fff 0,
+          #b9c7ff 9%,
+          #7997ff 23%,
+          #5a63ff 42%,
+          rgba(120,80,255,.2) 65%,
+          transparent 70%
+        );
+      box-shadow:
+        0 0 35px rgba(124,156,255,.65),
+        0 0 100px rgba(124,156,255,.25),
+        0 0 180px rgba(178,124,255,.13);
+      animation: corePulse 4s ease-in-out infinite;
     }
 
-    .core-ring {
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(124,156,255,.35);
-      border-radius: 50%;
-      animation: spin 12s linear infinite;
-    }
-
-    .core-ring::before,
-    .core-ring::after {
+    .core::before,
+    .core::after {
       content: "";
       position: absolute;
-      width: 7px;
-      height: 7px;
+      inset: -35px;
+      border: 1px solid rgba(124,156,255,.2);
       border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 18px var(--accent);
     }
 
-    .core-ring::before {
-      top: 12px;
-      left: 50%;
+    .core::after {
+      inset: -70px;
+      border-color: rgba(178,124,255,.11);
     }
 
-    .core-ring::after {
-      bottom: 30px;
-      right: 5px;
+    .ring {
+      position: absolute;
+      width: 290px;
+      height: 110px;
+      border: 1px solid rgba(124,156,255,.2);
+      border-radius: 50%;
+      transform: rotate(-22deg);
+      animation: orbit 9s linear infinite;
     }
 
-    .core-ring.two {
-      inset: 18px;
-      border-color: rgba(155,124,255,.35);
-      animation-duration: 8s;
+    .ring.two {
+      width: 360px;
+      height: 140px;
+      transform: rotate(34deg);
+      animation-duration: 13s;
       animation-direction: reverse;
+      border-color: rgba(178,124,255,.15);
     }
 
-    .core-ball {
-      width: 92px;
-      height: 92px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 35% 30%, #dce5ff, #718cff 28%, #4935a7 65%, #120c35);
-      box-shadow:
-        0 0 30px rgba(124,156,255,.55),
-        0 0 100px rgba(124,156,255,.2);
-      animation: breathe 3s ease-in-out infinite;
-      transition: .3s;
+    .ring.three {
+      width: 440px;
+      height: 180px;
+      transform: rotate(72deg);
+      animation-duration: 17s;
+      border-color: rgba(255,255,255,.07);
     }
 
-    .core:hover .core-ball {
-      transform: scale(1.12);
-      box-shadow:
-        0 0 45px rgba(124,156,255,.8),
-        0 0 130px rgba(124,156,255,.3);
+    .core-label {
+      position: absolute;
+      bottom: -108px;
+      font-size: 10px;
+      letter-spacing: .2em;
+      color: var(--muted);
+      text-transform: uppercase;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes breathe {
-      50% { transform: scale(1.05); }
-    }
-
-    /* ---------- WIDGETS ---------- */
 
     .widgets {
+      max-width: 900px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 22px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
     }
 
-    .widget {
-      padding: 20px;
-      min-height: 150px;
-      transition: .3s;
+    .card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 16px;
+      padding: 18px;
+      backdrop-filter: blur(20px);
+      transition: .25s ease;
     }
 
-    .widget:hover {
+    .card:hover {
       transform: translateY(-3px);
-      border-color: rgba(124,156,255,.25);
+      border-color: rgba(124,156,255,.2);
+      box-shadow: 0 15px 50px rgba(0,0,0,.18);
     }
 
-    .widget-label {
+    .card-label {
       color: var(--muted);
-      font-size: .72rem;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 12px;
+      letter-spacing: .15em;
+      margin-bottom: 10px;
+    }
+
+    .card-value {
+      font-size: 24px;
+      font-weight: 700;
     }
 
     .clock {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
     }
 
-    .date {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: .8rem;
+    .side-card {
+      margin-bottom: 14px;
     }
 
-    .quick-actions {
+    .telemetry {
+      display: grid;
+      gap: 13px;
+    }
+
+    .telemetry-row {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .action {
-      padding: 9px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      transition: .2s;
-    }
-
-    .action:hover {
-      background: rgba(124,156,255,.12);
-      border-color: rgba(124,156,255,.35);
-    }
-
-    /* ---------- RIGHT PANEL ---------- */
-
-    .right {
-      padding: 18px;
-      height: calc(100vh - 140px);
-      position: sticky;
-      top: 105px;
-    }
-
-    .right h3 {
-      margin: 8px 0 20px;
-      font-size: .9rem;
-    }
-
-    .metric {
-      padding: 15px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-
-    .metric-row {
-      display: flex;
+      align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: .78rem;
+      color: var(--muted);
+      font-size: 12px;
     }
 
-    .metric-row span:first-child {
-      color: var(--muted);
+    .telemetry-row strong {
+      color: var(--text);
+      font-weight: 600;
     }
 
     .bar {
-      height: 5px;
-      border-radius: 10px;
-      background: rgba(255,255,255,.07);
+      height: 4px;
+      border-radius: 99px;
       overflow: hidden;
+      background: rgba(255,255,255,.06);
+      margin-top: 7px;
     }
 
-    .bar i {
+    .bar span {
       display: block;
       height: 100%;
       width: 72%;
-      border-radius: inherit;
       background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: inherit;
     }
 
-    /* ---------- MODAL ---------- */
+    .command-box {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .command-box input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: rgba(0,0,0,.2);
+      color: var(--text);
+    }
+
+    .command-box button,
+    .primary {
+      padding: 11px 15px;
+      border-radius: 10px;
+      background: rgba(124,156,255,.14);
+      border: 1px solid rgba(124,156,255,.2);
+      color: var(--text);
+      transition: .2s ease;
+    }
+
+    .command-box button:hover,
+    .primary:hover {
+      background: rgba(124,156,255,.23);
+    }
+
+    .output {
+      min-height: 30px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .timer {
+      text-align: center;
+      font-size: 31px;
+      font-variant-numeric: tabular-nums;
+      margin: 10px 0 14px;
+    }
+
+    .timer-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .timer-actions button {
+      flex: 1;
+      padding: 9px;
+      border-radius: 9px;
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+    }
+
+    .timer-actions button:hover {
+      color: var(--text);
+      background: rgba(255,255,255,.09);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 26px;
+      letter-spacing: .12em;
+    }
 
     .modal {
       position: fixed;
       inset: 0;
       display: none;
       place-items: center;
-      background: rgba(0,0,0,.6);
-      backdrop-filter: blur(10px);
-      z-index: 50;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(12px);
+      z-index: 30;
+      padding: 20px;
     }
 
     .modal.open {
       display: grid;
     }
 
-    .modal-card {
-      width: min(450px, calc(100% - 30px));
-      padding: 25px;
+    .modal-box {
+      width: min(600px, 100%);
+      background: var(--panel-strong);
       border: 1px solid var(--border);
-      border-radius: 22px;
-      background: #0b0e17;
-      box-shadow: 0 30px 100px rgba(0,0,0,.5);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 30px 100px rgba(0,0,0,.4);
     }
 
-    .modal-card h2 {
-      margin-bottom: 15px;
+    .modal-box h2 {
+      margin-bottom: 14px;
     }
 
-    textarea {
+    .notes {
       width: 100%;
-      min-height: 170px;
+      min-height: 240px;
       resize: vertical;
-      padding: 14px;
+      padding: 13px;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      border-radius: 13px;
-      outline: none;
+      background: rgba(0,0,0,.25);
       color: var(--text);
-      background: rgba(255,255,255,.04);
+      outline: none;
     }
 
     .modal-actions {
@@ -477,216 +505,296 @@
       margin-top: 12px;
     }
 
-    /* ---------- RESPONSIVE ---------- */
+    .modal-actions button {
+      padding: 10px 14px;
+      border-radius: 9px;
+      background: rgba(255,255,255,.06);
+    }
 
-    @media (max-width: 1100px) {
-      .app {
-        grid-template-columns: 190px 1fr;
+    @keyframes breathe {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.08);
+      }
+    }
+
+    @keyframes corePulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.07);
+      }
+    }
+
+    @keyframes orbit {
+      from {
+        transform: rotate(0deg) rotateX(62deg);
+      }
+      to {
+        transform: rotate(360deg) rotateX(62deg);
+      }
+    }
+
+    @media (max-width: 1050px) {
+      .layout {
+        grid-template-columns: 190px minmax(0, 1fr);
       }
 
-      .right {
+      .right-panel {
         display: none;
       }
     }
 
-    @media (max-width: 720px) {
-      header {
-        padding: 0 16px;
-      }
-
-      .status {
-        display: none;
-      }
-
+    @media (max-width: 760px) {
       .app {
+        grid-template-rows: 62px 1fr;
+      }
+
+      header {
+        padding: 0 17px;
+      }
+
+      .layout {
         display: block;
-        padding: 95px 14px 25px;
       }
 
       aside {
-        height: auto;
-        position: static;
-        margin-bottom: 15px;
-      }
-
-      .side-title {
         display: none;
       }
 
-      aside .side-button {
-        width: auto;
-        display: inline-block;
-        margin-right: 5px;
-      }
-
-      .hero {
-        min-height: 430px;
+      .main {
+        padding: 26px 16px;
       }
 
       .widgets {
         grid-template-columns: 1fr;
+      }
+
+      .core-wrap {
+        height: 330px;
+      }
+
+      .ring {
+        width: 250px;
+      }
+
+      .ring.two {
+        width: 310px;
+      }
+
+      .ring.three {
+        width: 360px;
       }
     }
   </style>
 </head>
 
 <body>
-
   <canvas id="stars"></canvas>
-  <div class="orbital-glow"></div>
   <div class="noise"></div>
 
-  <header>
-    <div class="brand">
-      <div class="brand-mark">✦</div>
-      <span>PROJECT 09</span>
-    </div>
-
-    <div class="status">
-      <span class="status-dot"></span>
-      SYSTEM ONLINE
-    </div>
-  </header>
-
   <div class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-orb"></div>
+        <span>NEXUS</span>
+      </div>
 
-    <aside class="panel">
-      <div class="side-title">Navigation</div>
+      <div class="status">
+        <span class="status-dot"></span>
+        SYSTEM ONLINE
+      </div>
+    </header>
 
-      <button class="side-button active">◉ Overview</button>
-      <button class="side-button" onclick="openNotes()">▣ Notes</button>
-      <button class="side-button" onclick="focusTimer()">◷ Timer</button>
-      <button class="side-button" onclick="pulseCore()">✦ Core</button>
+    <div class="layout">
 
-      <div class="side-title" style="margin-top:25px;">Quick actions</div>
+      <aside>
+        <div class="side-title">Navigation</div>
 
-      <button class="side-button new-btn" onclick="newSession()">
-        + New Session
-      </button>
-
-      <button class="side-button" onclick="toggleFullscreen()">
-        ⛶ Fullscreen
-      </button>
-    </aside>
-
-    <main>
-
-      <section class="hero panel">
-
-        <div class="core" id="core">
-          <div class="core-ring"></div>
-          <div class="core-ring two"></div>
-          <div class="core-ball"></div>
+        <div class="nav">
+          <button class="active" onclick="pulseCore()">Core</button>
+          <button onclick="openNotes()">Notes</button>
+          <button onclick="startFocus()">Focus</button>
+          <button onclick="newSession()">New Session</button>
+          <button onclick="toggleFullscreen()">Fullscreen</button>
         </div>
 
-        <h1>Command Center</h1>
+        <div style="height:30px"></div>
 
-        <p>
-          One quiet place for ideas, tools, time, and everything
-          that needs your attention.
-        </p>
+        <div class="side-title">Commands</div>
 
-      </section>
-
-      <section class="widgets">
-
-        <div class="widget panel">
-          <div class="widget-label">Local time</div>
-          <div class="clock" id="clock">00:00:00</div>
-          <div class="date" id="date">Loading...</div>
+        <div class="nav">
+          <button onclick="runCommand('help')">/help</button>
+          <button onclick="runCommand('status')">/status</button>
+          <button onclick="runCommand('time')">/time</button>
+          <button onclick="runCommand('date')">/date</button>
         </div>
+      </aside>
 
-        <div class="widget panel">
-          <div class="widget-label">Quick tools</div>
+      <main class="main">
 
-          <div class="quick-actions">
-            <button class="action" onclick="openNotes()">Notes</button>
-            <button class="action" onclick="focusTimer()">Timer</button>
-            <button class="action" onclick="pulseCore()">Pulse</button>
+        <section class="hero">
+          <div class="eyebrow">Intelligent Command Center</div>
+
+          <h1>NEXUS</h1>
+
+          <p class="subtitle">
+            A futuristic workspace for ideas, focus, information and control.
+            Everything you need, orbiting around one central core.
+          </p>
+        </section>
+
+        <section class="core-wrap">
+          <div class="ring"></div>
+          <div class="ring two"></div>
+          <div class="ring three"></div>
+
+          <div class="core" id="core">
+            <div class="core-label">Core online</div>
+          </div>
+        </section>
+
+        <section class="widgets">
+
+          <div class="card">
+            <div class="card-label">Local Time</div>
+            <div class="card-value clock" id="clock">--:--:--</div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Session</div>
+            <div class="card-value" id="session">01</div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Core Status</div>
+            <div class="card-value" style="color:var(--good)">ONLINE</div>
+          </div>
+
+        </section>
+
+        <div class="card" style="max-width:900px;margin:14px auto 0;">
+          <div class="card-label">Command Interface</div>
+
+          <div class="command-box">
+            <input
+              id="commandInput"
+              type="text"
+              placeholder="Type /help..."
+              autocomplete="off"
+            />
+
+            <button onclick="executeInput()">Run</button>
+          </div>
+
+          <div class="output" id="output">
+            Nexus command interface ready.
           </div>
         </div>
 
-        <div class="widget panel">
-          <div class="widget-label">Session</div>
-          <div style="font-size:1.5rem;font-weight:700;" id="session">
-            Ready
+        <div class="footer">
+          NEXUS • SYSTEM READY
+        </div>
+
+      </main>
+
+      <aside class="right-panel">
+
+        <div class="side-title">Telemetry</div>
+
+        <div class="card side-card">
+          <div class="telemetry">
+
+            <div>
+              <div class="telemetry-row">
+                <span>Core</span>
+                <strong>100%</strong>
+              </div>
+              <div class="bar"><span style="width:100%"></span></div>
+            </div>
+
+            <div>
+              <div class="telemetry-row">
+                <span>Network</span>
+                <strong>98%</strong>
+              </div>
+              <div class="bar"><span style="width:98%"></span></div>
+            </div>
+
+            <div>
+              <div class="telemetry-row">
+                <span>Memory</span>
+                <strong>72%</strong>
+              </div>
+              <div class="bar"><span style="width:72%"></span></div>
+            </div>
+
+            <div>
+              <div class="telemetry-row">
+                <span>Stability</span>
+                <strong>99%</strong>
+              </div>
+              <div class="bar"><span style="width:99%"></span></div>
+            </div>
+
           </div>
-          <div class="date">
-            Everything is running locally.
+        </div>
+
+        <div class="card side-card">
+          <div class="card-label">Focus Timer</div>
+
+          <div class="timer" id="timer">
+            05:00
+          </div>
+
+          <div class="timer-actions">
+            <button onclick="startFocus()">Start</button>
+            <button onclick="stopFocus()">Stop</button>
+            <button onclick="resetFocus()">Reset</button>
           </div>
         </div>
 
-        <div class="widget panel">
-          <div class="widget-label">Focus timer</div>
-          <div class="clock" id="timer">05:00</div>
+        <div class="card">
+          <div class="card-label">Quick Actions</div>
 
-          <div class="quick-actions" style="margin-top:12px;">
-            <button class="action" onclick="startTimer()">Start</button>
-            <button class="action" onclick="resetTimer()">Reset</button>
-          </div>
+          <button class="primary" style="width:100%;margin-bottom:8px;" onclick="openNotes()">
+            Open Notes
+          </button>
+
+          <button class="primary" style="width:100%;" onclick="pulseCore()">
+            Pulse Core
+          </button>
         </div>
 
-      </section>
+      </aside>
 
-    </main>
-
-    <section class="right panel">
-
-      <h3>System telemetry</h3>
-
-      <div class="metric">
-        <div class="metric-row">
-          <span>Core activity</span>
-          <span>72%</span>
-        </div>
-        <div class="bar"><i style="width:72%"></i></div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-row">
-          <span>Network</span>
-          <span>98%</span>
-        </div>
-        <div class="bar"><i style="width:98%"></i></div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-row">
-          <span>Focus</span>
-          <span id="focusValue">84%</span>
-        </div>
-        <div class="bar"><i id="focusBar" style="width:84%"></i></div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-row">
-          <span>Session state</span>
-          <span style="color:var(--good)">ACTIVE</span>
-        </div>
-      </div>
-
-    </section>
-
+    </div>
   </div>
 
   <div class="modal" id="notesModal">
-    <div class="modal-card">
-      <h2>Quick Notes</h2>
+    <div class="modal-box">
+      <h2>Notes</h2>
 
       <textarea
+        class="notes"
         id="notes"
         placeholder="Write something..."
       ></textarea>
 
       <div class="modal-actions">
-        <button class="action" onclick="closeNotes()">Close</button>
-        <button class="action" onclick="saveNotes()">Save</button>
+        <button onclick="closeNotes()">Close</button>
+        <button onclick="saveNotes()">Save</button>
       </div>
     </div>
   </div>
 
   <script>
-    /* ---------- STARFIELD ---------- */
+    /* =========================
+       STARFIELD
+    ========================= */
 
     const canvas = document.getElementById("stars");
     const ctx = canvas.getContext("2d");
@@ -694,17 +802,16 @@
     let stars = [];
 
     function resizeCanvas() {
-      canvas.width = innerWidth;
-      canvas.height = innerHeight;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
       stars = Array.from(
-        { length: Math.min(180, Math.floor(innerWidth / 7)) },
+        { length: Math.min(180, Math.floor(window.innerWidth / 7)) },
         () => ({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          r: Math.random() * 1.4,
-          speed: .05 + Math.random() * .25,
-          alpha: .2 + Math.random() * .7
+          r: Math.random() * 1.4 + 0.2,
+          speed: Math.random() * 0.35 + 0.05
         })
       );
     }
@@ -712,203 +819,333 @@
     function drawStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      stars.forEach(star => {
+      for (const star of stars) {
         star.y += star.speed;
 
         if (star.y > canvas.height) {
-          star.y = -5;
+          star.y = 0;
           star.x = Math.random() * canvas.width;
         }
 
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(170,190,255,${star.alpha})`;
+        ctx.fillStyle = "rgba(255,255,255,.7)";
         ctx.fill();
-      });
+      }
 
       requestAnimationFrame(drawStars);
     }
 
-    addEventListener("resize", resizeCanvas);
     resizeCanvas();
     drawStars();
 
+    window.addEventListener("resize", resizeCanvas);
 
-    /* ---------- CLOCK ---------- */
+
+    /* =========================
+       CLOCK
+    ========================= */
 
     function updateClock() {
       const now = new Date();
 
       document.getElementById("clock").textContent =
-        now.toLocaleTimeString();
-
-      document.getElementById("date").textContent =
-        now.toLocaleDateString(undefined, {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric"
+        now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
         });
     }
 
-    setInterval(updateClock, 1000);
     updateClock();
+    setInterval(updateClock, 1000);
 
 
-    /* ---------- NOTES ---------- */
-
-    const notes = document.getElementById("notes");
-    notes.value = localStorage.getItem("project09_notes") || "";
-
-    function openNotes() {
-      document.getElementById("notesModal").classList.add("open");
-      notes.focus();
-    }
-
-    function closeNotes() {
-      document.getElementById("notesModal").classList.remove("open");
-    }
-
-    function saveNotes() {
-      localStorage.setItem("project09_notes", notes.value);
-      document.getElementById("session").textContent = "Saved";
-      closeNotes();
-    }
-
-
-    /* ---------- TIMER ---------- */
-
-    let seconds = 300;
-    let timerInterval = null;
-
-    function renderTimer() {
-      const min = Math.floor(seconds / 60)
-        .toString()
-        .padStart(2, "0");
-
-      const sec = (seconds % 60)
-        .toString()
-        .padStart(2, "0");
-
-      document.getElementById("timer").textContent =
-        `${min}:${sec}`;
-    }
-
-    function startTimer() {
-      if (timerInterval) return;
-
-      document.getElementById("session").textContent =
-        "Focus mode";
-
-      timerInterval = setInterval(() => {
-        if (seconds <= 0) {
-          clearInterval(timerInterval);
-          timerInterval = null;
-          document.getElementById("session").textContent =
-            "Timer complete";
-          return;
-        }
-
-        seconds--;
-        renderTimer();
-
-        const percentage =
-          Math.max(0, Math.round((seconds / 300) * 100));
-
-        document.getElementById("focusValue").textContent =
-          percentage + "%";
-
-        document.getElementById("focusBar").style.width =
-          percentage + "%";
-      }, 1000);
-    }
-
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      seconds = 300;
-      renderTimer();
-
-      document.getElementById("focusValue").textContent = "84%";
-      document.getElementById("focusBar").style.width = "84%";
-      document.getElementById("session").textContent = "Ready";
-    }
-
-    function focusTimer() {
-      document.getElementById("timer").scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
-    }
-
-
-    /* ---------- CORE ---------- */
+    /* =========================
+       CORE
+    ========================= */
 
     function pulseCore() {
       const core = document.getElementById("core");
-      const ball = core.querySelector(".core-ball");
 
-      ball.animate(
+      core.animate(
         [
-          { transform: "scale(1)" },
-          { transform: "scale(1.4)", filter: "brightness(1.8)" },
-          { transform: "scale(1)" }
+          {
+            transform: "scale(1)",
+            filter: "brightness(1)"
+          },
+          {
+            transform: "scale(1.22)",
+            filter: "brightness(1.7)"
+          },
+          {
+            transform: "scale(1)",
+            filter: "brightness(1)"
+          }
         ],
         {
-          duration: 800,
+          duration: 900,
           easing: "ease-out"
         }
       );
 
-      document.getElementById("session").textContent =
-        "Core pulsed";
+      showOutput("Core pulse executed.");
     }
 
 
-    /* ---------- SESSION ---------- */
+    /* =========================
+       SESSIONS
+    ========================= */
+
+    let session = 1;
 
     function newSession() {
+      session++;
+
       document.getElementById("session").textContent =
-        "New session";
+        String(session).padStart(2, "0");
 
-      resetTimer();
-
-      setTimeout(() => {
-        document.getElementById("session").textContent =
-          "Ready";
-      }, 1800);
+      showOutput("New session initialized.");
     }
 
 
-    /* ---------- FULLSCREEN ---------- */
+    /* =========================
+       NOTES
+    ========================= */
+
+    const notesModal = document.getElementById("notesModal");
+    const notes = document.getElementById("notes");
+
+    function openNotes() {
+      notes.value = localStorage.getItem("nexusNotes") || "";
+      notesModal.classList.add("open");
+    }
+
+    function closeNotes() {
+      notesModal.classList.remove("open");
+    }
+
+    function saveNotes() {
+      localStorage.setItem("nexusNotes", notes.value);
+      closeNotes();
+      showOutput("Notes saved locally.");
+    }
+
+
+    /* =========================
+       FULLSCREEN
+    ========================= */
 
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen?.();
+        document.documentElement.requestFullscreen();
+        showOutput("Fullscreen enabled.");
       } else {
-        document.exitFullscreen?.();
+        document.exitFullscreen();
+        showOutput("Fullscreen disabled.");
       }
     }
 
 
-    /* ---------- KEYBOARD ---------- */
+    /* =========================
+       FOCUS TIMER
+    ========================= */
+
+    let focusSeconds = 300;
+    let focusInterval = null;
+
+    function renderTimer() {
+      const minutes = Math.floor(focusSeconds / 60)
+        .toString()
+        .padStart(2, "0");
+
+      const seconds = (focusSeconds % 60)
+        .toString()
+        .padStart(2, "0");
+
+      document.getElementById("timer").textContent =
+        `${minutes}:${seconds}`;
+    }
+
+    function startFocus() {
+      if (focusInterval) return;
+
+      showOutput("Focus timer started.");
+
+      focusInterval = setInterval(() => {
+        if (focusSeconds > 0) {
+          focusSeconds--;
+          renderTimer();
+        } else {
+          stopFocus();
+          showOutput("Focus session complete.");
+        }
+      }, 1000);
+    }
+
+    function stopFocus() {
+      clearInterval(focusInterval);
+      focusInterval = null;
+      showOutput("Focus timer stopped.");
+    }
+
+    function resetFocus() {
+      stopFocus();
+      focusSeconds = 300;
+      renderTimer();
+      showOutput("Focus timer reset.");
+    }
+
+
+    /* =========================
+       COMMAND SYSTEM
+    ========================= */
+
+    const commands = {
+      help: () => {
+        return [
+          "/help        Show available commands",
+          "/status      Show system status",
+          "/time        Show current time",
+          "/date        Show current date",
+          "/focus       Start focus timer",
+          "/stop        Stop focus timer",
+          "/notes       Open notes",
+          "/fullscreen  Toggle fullscreen",
+          "/pulse       Pulse the core",
+          "/session     Start new session",
+          "/clear       Clear command output"
+        ].join("\n");
+      },
+
+      status: () => {
+        return [
+          "NEXUS STATUS",
+          "────────────",
+          "Core:       ONLINE",
+          "Network:    STABLE",
+          "Memory:     72%",
+          "Stability:  99%",
+          "Session:    " + String(session).padStart(2, "0")
+        ].join("\n");
+      },
+
+      time: () => {
+        return new Date().toLocaleTimeString();
+      },
+
+      date: () => {
+        return new Date().toLocaleDateString();
+      },
+
+      focus: () => {
+        startFocus();
+        return "Focus timer started.";
+      },
+
+      stop: () => {
+        stopFocus();
+        return "Focus timer stopped.";
+      },
+
+      notes: () => {
+        openNotes();
+        return "Opening notes...";
+      },
+
+      fullscreen: () => {
+        toggleFullscreen();
+        return "Fullscreen command executed.";
+      },
+
+      pulse: () => {
+        pulseCore();
+        return "Core pulse executed.";
+      },
+
+      session: () => {
+        newSession();
+        return "New session initialized.";
+      },
+
+      clear: () => {
+        return "";
+      }
+    };
+
+    function runCommand(command) {
+      const clean = command
+        .replace("/", "")
+        .trim()
+        .toLowerCase();
+
+      if (commands[clean]) {
+        const result = commands[clean]();
+
+        if (clean === "clear") {
+          document.getElementById("output").textContent = "";
+        } else if (result) {
+          showOutput(result);
+        }
+      } else {
+        showOutput(
+          `Unknown command: /${clean}\nType /help for available commands.`
+        );
+      }
+    }
+
+    function executeInput() {
+      const input = document.getElementById("commandInput");
+      const value = input.value.trim();
+
+      if (!value) return;
+
+      runCommand(value);
+      input.value = "";
+    }
+
+    function showOutput(text) {
+      document.getElementById("output").textContent = text;
+    }
+
+    document
+      .getElementById("commandInput")
+      .addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          executeInput();
+        }
+      });
+
+
+    /* =========================
+       KEYBOARD SHORTCUTS
+    ========================= */
 
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") {
         closeNotes();
       }
 
-      if (event.key.toLowerCase() === "n" && !event.ctrlKey) {
+      if (
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "n"
+      ) {
+        event.preventDefault();
         openNotes();
       }
 
-      if (event.key === " ") {
+      if (
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase() === "p"
+      ) {
         event.preventDefault();
         pulseCore();
       }
     });
-  </script>
 
+    renderTimer();
+  </script>
 </body>
 </html>
-```
