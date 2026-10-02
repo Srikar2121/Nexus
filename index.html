@@ -1,0 +1,914 @@
+```html
+<!-- Nexus -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#05070d">
+  <title>Project 09</title>
+
+  <style>
+    :root {
+      --bg: #05070d;
+      --panel: rgba(255,255,255,.055);
+      --border: rgba(255,255,255,.1);
+      --text: #eef3ff;
+      --muted: #7f8aa3;
+      --accent: #7c9cff;
+      --accent2: #9b7cff;
+      --good: #69f0ae;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(100,120,255,.11), transparent 30%),
+        radial-gradient(circle at 15% 85%, rgba(150,80,255,.08), transparent 30%),
+        var(--bg);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* ---------- BACKGROUND ---------- */
+
+    #stars {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      opacity: .025;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          #fff 3px
+        );
+    }
+
+    .orbital-glow {
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      left: 50%;
+      top: 42%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(
+        circle,
+        rgba(124,156,255,.14),
+        transparent 68%
+      );
+      filter: blur(25px);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    /* ---------- HEADER ---------- */
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 74px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5,7,13,.68);
+      backdrop-filter: blur(22px);
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 25px rgba(124,156,255,.35);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 12px var(--good);
+    }
+
+    /* ---------- LAYOUT ---------- */
+
+    .app {
+      min-height: 100vh;
+      padding: 105px 28px 35px;
+      display: grid;
+      grid-template-columns: 230px 1fr 250px;
+      gap: 22px;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border-radius: 22px;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+
+    aside {
+      padding: 18px;
+      height: calc(100vh - 140px);
+      position: sticky;
+      top: 105px;
+    }
+
+    .side-title {
+      font-size: .72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 8px 8px 15px;
+    }
+
+    .side-button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 7px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      transition: .25s;
+    }
+
+    .side-button:hover,
+    .side-button.active {
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      border-color: var(--border);
+    }
+
+    .new-btn {
+      margin-bottom: 25px;
+      color: white;
+      background: linear-gradient(
+        135deg,
+        rgba(124,156,255,.25),
+        rgba(155,124,255,.2)
+      );
+      border-color: rgba(124,156,255,.25);
+    }
+
+    /* ---------- MAIN ---------- */
+
+    main {
+      min-width: 0;
+    }
+
+    .hero {
+      min-height: 370px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      letter-spacing: -3px;
+      margin-bottom: 12px;
+      background: linear-gradient(
+        135deg,
+        #fff,
+        #9db3ff,
+        #b496ff
+      );
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 560px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ---------- CORE ---------- */
+
+    .core {
+      width: 180px;
+      height: 180px;
+      margin-bottom: 35px;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .core-ring {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(124,156,255,.35);
+      border-radius: 50%;
+      animation: spin 12s linear infinite;
+    }
+
+    .core-ring::before,
+    .core-ring::after {
+      content: "";
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px var(--accent);
+    }
+
+    .core-ring::before {
+      top: 12px;
+      left: 50%;
+    }
+
+    .core-ring::after {
+      bottom: 30px;
+      right: 5px;
+    }
+
+    .core-ring.two {
+      inset: 18px;
+      border-color: rgba(155,124,255,.35);
+      animation-duration: 8s;
+      animation-direction: reverse;
+    }
+
+    .core-ball {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, #dce5ff, #718cff 28%, #4935a7 65%, #120c35);
+      box-shadow:
+        0 0 30px rgba(124,156,255,.55),
+        0 0 100px rgba(124,156,255,.2);
+      animation: breathe 3s ease-in-out infinite;
+      transition: .3s;
+    }
+
+    .core:hover .core-ball {
+      transform: scale(1.12);
+      box-shadow:
+        0 0 45px rgba(124,156,255,.8),
+        0 0 130px rgba(124,156,255,.3);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes breathe {
+      50% { transform: scale(1.05); }
+    }
+
+    /* ---------- WIDGETS ---------- */
+
+    .widgets {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 22px;
+    }
+
+    .widget {
+      padding: 20px;
+      min-height: 150px;
+      transition: .3s;
+    }
+
+    .widget:hover {
+      transform: translateY(-3px);
+      border-color: rgba(124,156,255,.25);
+    }
+
+    .widget-label {
+      color: var(--muted);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+    }
+
+    .clock {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .date {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .action {
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      transition: .2s;
+    }
+
+    .action:hover {
+      background: rgba(124,156,255,.12);
+      border-color: rgba(124,156,255,.35);
+    }
+
+    /* ---------- RIGHT PANEL ---------- */
+
+    .right {
+      padding: 18px;
+      height: calc(100vh - 140px);
+      position: sticky;
+      top: 105px;
+    }
+
+    .right h3 {
+      margin: 8px 0 20px;
+      font-size: .9rem;
+    }
+
+    .metric {
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: .78rem;
+    }
+
+    .metric-row span:first-child {
+      color: var(--muted);
+    }
+
+    .bar {
+      height: 5px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.07);
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      width: 72%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    /* ---------- MODAL ---------- */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(10px);
+      z-index: 50;
+    }
+
+    .modal.open {
+      display: grid;
+    }
+
+    .modal-card {
+      width: min(450px, calc(100% - 30px));
+      padding: 25px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: #0b0e17;
+      box-shadow: 0 30px 100px rgba(0,0,0,.5);
+    }
+
+    .modal-card h2 {
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      resize: vertical;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      outline: none;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 190px 1fr;
+      }
+
+      .right {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      header {
+        padding: 0 16px;
+      }
+
+      .status {
+        display: none;
+      }
+
+      .app {
+        display: block;
+        padding: 95px 14px 25px;
+      }
+
+      aside {
+        height: auto;
+        position: static;
+        margin-bottom: 15px;
+      }
+
+      .side-title {
+        display: none;
+      }
+
+      aside .side-button {
+        width: auto;
+        display: inline-block;
+        margin-right: 5px;
+      }
+
+      .hero {
+        min-height: 430px;
+      }
+
+      .widgets {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="stars"></canvas>
+  <div class="orbital-glow"></div>
+  <div class="noise"></div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">✦</div>
+      <span>PROJECT 09</span>
+    </div>
+
+    <div class="status">
+      <span class="status-dot"></span>
+      SYSTEM ONLINE
+    </div>
+  </header>
+
+  <div class="app">
+
+    <aside class="panel">
+      <div class="side-title">Navigation</div>
+
+      <button class="side-button active">◉ Overview</button>
+      <button class="side-button" onclick="openNotes()">▣ Notes</button>
+      <button class="side-button" onclick="focusTimer()">◷ Timer</button>
+      <button class="side-button" onclick="pulseCore()">✦ Core</button>
+
+      <div class="side-title" style="margin-top:25px;">Quick actions</div>
+
+      <button class="side-button new-btn" onclick="newSession()">
+        + New Session
+      </button>
+
+      <button class="side-button" onclick="toggleFullscreen()">
+        ⛶ Fullscreen
+      </button>
+    </aside>
+
+    <main>
+
+      <section class="hero panel">
+
+        <div class="core" id="core">
+          <div class="core-ring"></div>
+          <div class="core-ring two"></div>
+          <div class="core-ball"></div>
+        </div>
+
+        <h1>Command Center</h1>
+
+        <p>
+          One quiet place for ideas, tools, time, and everything
+          that needs your attention.
+        </p>
+
+      </section>
+
+      <section class="widgets">
+
+        <div class="widget panel">
+          <div class="widget-label">Local time</div>
+          <div class="clock" id="clock">00:00:00</div>
+          <div class="date" id="date">Loading...</div>
+        </div>
+
+        <div class="widget panel">
+          <div class="widget-label">Quick tools</div>
+
+          <div class="quick-actions">
+            <button class="action" onclick="openNotes()">Notes</button>
+            <button class="action" onclick="focusTimer()">Timer</button>
+            <button class="action" onclick="pulseCore()">Pulse</button>
+          </div>
+        </div>
+
+        <div class="widget panel">
+          <div class="widget-label">Session</div>
+          <div style="font-size:1.5rem;font-weight:700;" id="session">
+            Ready
+          </div>
+          <div class="date">
+            Everything is running locally.
+          </div>
+        </div>
+
+        <div class="widget panel">
+          <div class="widget-label">Focus timer</div>
+          <div class="clock" id="timer">05:00</div>
+
+          <div class="quick-actions" style="margin-top:12px;">
+            <button class="action" onclick="startTimer()">Start</button>
+            <button class="action" onclick="resetTimer()">Reset</button>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <section class="right panel">
+
+      <h3>System telemetry</h3>
+
+      <div class="metric">
+        <div class="metric-row">
+          <span>Core activity</span>
+          <span>72%</span>
+        </div>
+        <div class="bar"><i style="width:72%"></i></div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-row">
+          <span>Network</span>
+          <span>98%</span>
+        </div>
+        <div class="bar"><i style="width:98%"></i></div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-row">
+          <span>Focus</span>
+          <span id="focusValue">84%</span>
+        </div>
+        <div class="bar"><i id="focusBar" style="width:84%"></i></div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-row">
+          <span>Session state</span>
+          <span style="color:var(--good)">ACTIVE</span>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="modal" id="notesModal">
+    <div class="modal-card">
+      <h2>Quick Notes</h2>
+
+      <textarea
+        id="notes"
+        placeholder="Write something..."
+      ></textarea>
+
+      <div class="modal-actions">
+        <button class="action" onclick="closeNotes()">Close</button>
+        <button class="action" onclick="saveNotes()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- STARFIELD ---------- */
+
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+
+    let stars = [];
+
+    function resizeCanvas() {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+
+      stars = Array.from(
+        { length: Math.min(180, Math.floor(innerWidth / 7)) },
+        () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.4,
+          speed: .05 + Math.random() * .25,
+          alpha: .2 + Math.random() * .7
+        })
+      );
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      stars.forEach(star => {
+        star.y += star.speed;
+
+        if (star.y > canvas.height) {
+          star.y = -5;
+          star.x = Math.random() * canvas.width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(170,190,255,${star.alpha})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawStars);
+    }
+
+    addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    drawStars();
+
+
+    /* ---------- CLOCK ---------- */
+
+    function updateClock() {
+      const now = new Date();
+
+      document.getElementById("clock").textContent =
+        now.toLocaleTimeString();
+
+      document.getElementById("date").textContent =
+        now.toLocaleDateString(undefined, {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        });
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+
+    /* ---------- NOTES ---------- */
+
+    const notes = document.getElementById("notes");
+    notes.value = localStorage.getItem("project09_notes") || "";
+
+    function openNotes() {
+      document.getElementById("notesModal").classList.add("open");
+      notes.focus();
+    }
+
+    function closeNotes() {
+      document.getElementById("notesModal").classList.remove("open");
+    }
+
+    function saveNotes() {
+      localStorage.setItem("project09_notes", notes.value);
+      document.getElementById("session").textContent = "Saved";
+      closeNotes();
+    }
+
+
+    /* ---------- TIMER ---------- */
+
+    let seconds = 300;
+    let timerInterval = null;
+
+    function renderTimer() {
+      const min = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, "0");
+
+      const sec = (seconds % 60)
+        .toString()
+        .padStart(2, "0");
+
+      document.getElementById("timer").textContent =
+        `${min}:${sec}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+
+      document.getElementById("session").textContent =
+        "Focus mode";
+
+      timerInterval = setInterval(() => {
+        if (seconds <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          document.getElementById("session").textContent =
+            "Timer complete";
+          return;
+        }
+
+        seconds--;
+        renderTimer();
+
+        const percentage =
+          Math.max(0, Math.round((seconds / 300) * 100));
+
+        document.getElementById("focusValue").textContent =
+          percentage + "%";
+
+        document.getElementById("focusBar").style.width =
+          percentage + "%";
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      seconds = 300;
+      renderTimer();
+
+      document.getElementById("focusValue").textContent = "84%";
+      document.getElementById("focusBar").style.width = "84%";
+      document.getElementById("session").textContent = "Ready";
+    }
+
+    function focusTimer() {
+      document.getElementById("timer").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+
+
+    /* ---------- CORE ---------- */
+
+    function pulseCore() {
+      const core = document.getElementById("core");
+      const ball = core.querySelector(".core-ball");
+
+      ball.animate(
+        [
+          { transform: "scale(1)" },
+          { transform: "scale(1.4)", filter: "brightness(1.8)" },
+          { transform: "scale(1)" }
+        ],
+        {
+          duration: 800,
+          easing: "ease-out"
+        }
+      );
+
+      document.getElementById("session").textContent =
+        "Core pulsed";
+    }
+
+
+    /* ---------- SESSION ---------- */
+
+    function newSession() {
+      document.getElementById("session").textContent =
+        "New session";
+
+      resetTimer();
+
+      setTimeout(() => {
+        document.getElementById("session").textContent =
+          "Ready";
+      }, 1800);
+    }
+
+
+    /* ---------- FULLSCREEN ---------- */
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+
+
+    /* ---------- KEYBOARD ---------- */
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeNotes();
+      }
+
+      if (event.key.toLowerCase() === "n" && !event.ctrlKey) {
+        openNotes();
+      }
+
+      if (event.key === " ") {
+        event.preventDefault();
+        pulseCore();
+      }
+    });
+  </script>
+
+</body>
+</html>
+```
