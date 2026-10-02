@@ -1,573 +1,745 @@
-<!-- Nexus v4 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Nexus — Command Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Personal Command Center</title>
 
 <style>
 :root{
-  --bg:#05070d;
-  --panel:rgba(13,17,30,.76);
-  --panel2:rgba(18,23,40,.9);
-  --border:rgba(255,255,255,.08);
+  --bg:#05060a;
+  --panel:rgba(15,17,25,.78);
+  --panel2:rgba(20,23,34,.65);
+  --border:rgba(255,255,255,.09);
   --text:#f5f7ff;
-  --muted:#8993aa;
-  --accent:#7c9cff;
-  --accent2:#b47cff;
-  --good:#5ff2ad;
-  --warn:#ffd166;
-  --danger:#ff6b81;
+  --muted:#8d94a8;
+  --accent:#7c5cff;
+  --accent2:#00d9ff;
+  --green:#43e68a;
+  --red:#ff5f6d;
+  --yellow:#ffc857;
+  --shadow:0 20px 70px rgba(0,0,0,.45);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box}
 
-html{scroll-behavior:smooth}
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
 body{
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 50% 0%,rgba(124,156,255,.12),transparent 32%),
-    radial-gradient(circle at 90% 80%,rgba(180,124,255,.08),transparent 28%),
-    var(--bg);
-  color:var(--text);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  overflow-x:hidden;
 }
 
-button,input,textarea{font:inherit}
-button{cursor:pointer;color:inherit;border:0}
+button,input,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
 
 #stars{
   position:fixed;
   inset:0;
   width:100%;
   height:100%;
-  z-index:-2;
+  z-index:-5;
 }
 
-.noise{
+body::before{
+  content:"";
   position:fixed;
   inset:0;
   pointer-events:none;
-  opacity:.025;
-  z-index:50;
+  z-index:-4;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(124,92,255,.12),transparent 30%),
+    radial-gradient(circle at 80% 10%,rgba(0,217,255,.08),transparent 25%),
+    radial-gradient(circle at 50% 90%,rgba(124,92,255,.07),transparent 35%);
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:20;
+  opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
 }
 
 .app{
+  display:grid;
+  grid-template-columns:240px 1fr;
   min-height:100vh;
-  display:grid;
-  grid-template-rows:70px 1fr;
-}
-
-header{
-  position:sticky;
-  top:0;
-  z-index:20;
-  height:70px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 28px;
-  background:rgba(5,7,13,.75);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(20px);
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-size:14px;
-  font-weight:800;
-  letter-spacing:.18em;
-}
-
-.brand-orb{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#fff,var(--accent) 25%,var(--accent2) 60%,transparent 72%);
-  box-shadow:0 0 20px rgba(124,156,255,.7);
-  animation:breathe 3s ease-in-out infinite;
-}
-
-.status{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:var(--muted);
-  font-size:11px;
-  letter-spacing:.13em;
-}
-
-.status-dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--good);
-  box-shadow:0 0 12px var(--good);
-}
-
-.layout{
-  display:grid;
-  grid-template-columns:220px minmax(0,1fr) 270px;
-  min-height:calc(100vh - 70px);
 }
 
 .sidebar{
-  padding:22px 15px;
+  position:sticky;
+  top:0;
+  height:100vh;
+  padding:22px 16px;
   border-right:1px solid var(--border);
-  background:rgba(7,10,18,.5);
+  background:rgba(5,6,10,.78);
+  backdrop-filter:blur(25px);
+  z-index:10;
 }
 
-.rightbar{
-  border-left:1px solid var(--border);
-  padding:22px 15px;
-  background:rgba(7,10,18,.4);
-}
-
-.section-label{
-  color:var(--muted);
-  font-size:9px;
+.logo{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:8px 10px 25px;
+  font-weight:900;
   letter-spacing:.18em;
-  text-transform:uppercase;
-  margin:18px 10px 9px;
 }
 
-.section-label:first-child{margin-top:0}
+.logo-orb{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,white,var(--accent2) 20%,var(--accent) 55%,transparent 70%);
+  box-shadow:0 0 28px rgba(124,92,255,.75);
+}
+
+.logo span{
+  font-size:17px;
+}
+
+.nav-label{
+  color:#555c70;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.18em;
+  margin:20px 10px 8px;
+}
 
 .nav{
-  display:grid;
-  gap:6px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
 }
 
 .nav button{
-  width:100%;
-  padding:11px 12px;
-  text-align:left;
-  border-radius:10px;
+  border:1px solid transparent;
   background:transparent;
   color:var(--muted);
+  text-align:left;
+  padding:11px 12px;
+  border-radius:10px;
   transition:.2s;
 }
 
 .nav button:hover,
 .nav button.active{
-  color:var(--text);
-  background:rgba(124,156,255,.1);
-  transform:translateX(2px);
+  color:white;
+  background:rgba(124,92,255,.1);
+  border-color:rgba(124,92,255,.2);
+}
+
+.sidebar-bottom{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:18px;
+}
+
+.status{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+  border-radius:14px;
+  padding:13px;
+}
+
+.status-top{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+}
+
+.status strong{
+  display:block;
+  margin-top:8px;
+  font-size:13px;
 }
 
 .main{
-  padding:30px;
-  overflow:hidden;
+  min-width:0;
+  padding:25px;
 }
 
-.container{
-  width:min(1100px,100%);
-  margin:auto;
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:25px;
+}
+
+.breadcrumb{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.breadcrumb strong{
+  color:white;
+}
+
+.top-actions{
+  display:flex;
+  gap:8px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:white;
 }
 
 .hero{
-  padding:20px 0 28px;
+  position:relative;
+  overflow:hidden;
+  min-height:250px;
+  padding:32px;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 85% 50%,rgba(124,92,255,.18),transparent 32%),
+    linear-gradient(135deg,rgba(20,22,34,.9),rgba(9,11,17,.75));
+  box-shadow:var(--shadow);
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:300px;
+  height:300px;
+  right:-100px;
+  top:-100px;
+  border:1px solid rgba(0,217,255,.12);
+  border-radius:50%;
+  box-shadow:0 0 100px rgba(124,92,255,.1);
 }
 
 .eyebrow{
-  color:var(--accent);
+  color:var(--accent2);
   font-size:10px;
-  text-transform:uppercase;
   letter-spacing:.22em;
-  margin-bottom:10px;
+  font-weight:900;
+  margin-bottom:12px;
 }
 
-h1{
-  font-size:clamp(42px,7vw,76px);
+.hero h1{
+  margin:0;
+  font-size:clamp(38px,6vw,72px);
   line-height:.95;
-  letter-spacing:-.065em;
-  background:linear-gradient(135deg,#fff,#9fb4ff,#b995ff);
-  -webkit-background-clip:text;
+  letter-spacing:-.06em;
+}
+
+.gradient{
+  background:linear-gradient(100deg,#fff,var(--accent2),var(--accent));
   background-clip:text;
+  -webkit-background-clip:text;
   color:transparent;
 }
 
 .hero p{
-  max-width:650px;
-  margin-top:15px;
+  max-width:600px;
   color:var(--muted);
   line-height:1.7;
-  font-size:14px;
-}
-
-.grid{
-  display:grid;
-  gap:13px;
-}
-
-.stats{
-  grid-template-columns:repeat(4,1fr);
-}
-
-.card{
-  border:1px solid var(--border);
-  background:var(--panel);
-  border-radius:16px;
-  padding:18px;
-  backdrop-filter:blur(20px);
-  box-shadow:0 20px 60px rgba(0,0,0,.12);
-  transition:.2s;
-}
-
-.card:hover{
-  transform:translateY(-2px);
-  border-color:rgba(124,156,255,.18);
-}
-
-.label{
-  color:var(--muted);
-  font-size:9px;
-  letter-spacing:.15em;
-  text-transform:uppercase;
-  margin-bottom:10px;
-}
-
-.big{
-  font-size:28px;
-  font-weight:750;
-}
-
-.green{color:var(--good)}
-
-.accent{color:var(--accent)}
-
-.dashboard{
-  display:grid;
-  grid-template-columns:1.35fr .65fr;
-  gap:13px;
-  margin-top:13px;
-}
-
-.projects{
-  display:grid;
-  gap:9px;
-}
-
-.project{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:13px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:rgba(255,255,255,.025);
-  transition:.2s;
-}
-
-.project:hover{
-  background:rgba(124,156,255,.06);
-  border-color:rgba(124,156,255,.17);
-}
-
-.project-info{
-  min-width:0;
-}
-
-.project-name{
-  font-weight:700;
-  font-size:14px;
-}
-
-.project-desc{
-  color:var(--muted);
-  font-size:10px;
-  margin-top:4px;
-}
-
-.project-actions{
-  display:flex;
-  gap:6px;
-}
-
-.project-actions button,
-.action{
-  padding:8px 10px;
-  border-radius:8px;
-  background:rgba(124,156,255,.1);
-  color:var(--text);
-  font-size:10px;
-  border:1px solid rgba(124,156,255,.13);
-}
-
-.project-actions button:hover,
-.action:hover{
-  background:rgba(124,156,255,.2);
-}
-
-.dot{
-  display:inline-block;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  margin-right:6px;
-  background:var(--good);
-  box-shadow:0 0 8px var(--good);
-}
-
-.activity{
-  display:grid;
-  gap:9px;
-}
-
-.activity-item{
-  display:flex;
-  gap:10px;
-  padding:10px;
-  border-radius:10px;
-  background:rgba(255,255,255,.025);
-}
-
-.activity-icon{
-  width:27px;
-  height:27px;
-  display:grid;
-  place-items:center;
-  border-radius:8px;
-  background:rgba(124,156,255,.1);
-}
-
-.activity-text{
-  font-size:11px;
-}
-
-.activity-time{
-  color:var(--muted);
-  font-size:9px;
-  margin-top:3px;
-}
-
-.quick{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:9px;
-}
-
-.quick button{
-  padding:14px 8px;
-  border-radius:11px;
-  background:rgba(255,255,255,.035);
-  border:1px solid var(--border);
-  color:var(--muted);
-  transition:.2s;
-}
-
-.quick button:hover{
-  color:var(--text);
-  background:rgba(124,156,255,.08);
-}
-
-.clock{
-  font-size:27px;
-  font-weight:700;
-  font-variant-numeric:tabular-nums;
-}
-
-.date{
-  color:var(--muted);
-  font-size:10px;
-  margin-top:4px;
-}
-
-.timer{
-  text-align:center;
-  font-size:36px;
-  font-variant-numeric:tabular-nums;
-  margin:12px 0;
-}
-
-.timer-actions{
-  display:flex;
-  gap:6px;
-}
-
-.timer-actions button{
-  flex:1;
-  padding:8px;
-  border-radius:8px;
-  background:rgba(255,255,255,.05);
-  color:var(--muted);
-}
-
-.timer-actions button:hover{
-  color:var(--text);
-}
-
-.telemetry{
-  display:grid;
-  gap:13px;
-}
-
-.telemetry-row{
-  display:flex;
-  justify-content:space-between;
-  font-size:10px;
-  color:var(--muted);
-}
-
-.telemetry-row strong{
-  color:var(--text);
-}
-
-.bar{
-  height:4px;
-  margin-top:6px;
-  overflow:hidden;
-  border-radius:10px;
-  background:rgba(255,255,255,.06);
-}
-
-.bar span{
-  display:block;
-  height:100%;
-  border-radius:inherit;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  margin:18px 0 24px;
 }
 
 .command{
   display:flex;
-  gap:7px;
+  max-width:650px;
+  border:1px solid rgba(124,92,255,.28);
+  border-radius:13px;
+  overflow:hidden;
+  background:rgba(0,0,0,.28);
+}
+
+.command span{
+  padding:13px 0 13px 14px;
+  color:var(--accent2);
+  font-weight:800;
 }
 
 .command input{
   flex:1;
   min-width:0;
-  padding:10px;
-  border:1px solid var(--border);
-  border-radius:9px;
-  outline:none;
-  background:rgba(0,0,0,.2);
-  color:var(--text);
+  border:0;
+  outline:0;
+  background:transparent;
+  color:white;
+  padding:13px;
 }
 
 .command button{
-  padding:10px 13px;
-  border-radius:9px;
-  background:rgba(124,156,255,.13);
+  border:0;
+  padding:0 16px;
+  background:var(--accent);
+  color:white;
+  font-weight:800;
 }
 
-.output{
-  min-height:20px;
-  margin-top:9px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:16px;
+  margin-top:16px;
+}
+
+.card{
+  min-width:0;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:var(--panel);
+  backdrop-filter:blur(20px);
+  box-shadow:0 12px 40px rgba(0,0,0,.2);
+}
+
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 18px 12px;
+}
+
+.card-title{
+  font-size:13px;
+  font-weight:850;
+}
+
+.card-sub{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.card-body{
+  padding:0 18px 18px;
+}
+
+.stats{
+  grid-column:span 12;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.stat{
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(255,255,255,.025);
+}
+
+.stat small{
   color:var(--muted);
   font-size:10px;
-  line-height:1.6;
-  white-space:pre-wrap;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+}
+
+.stat strong{
+  display:block;
+  font-size:28px;
+  margin-top:7px;
+}
+
+.stat em{
+  color:var(--green);
+  font-size:10px;
+  font-style:normal;
+}
+
+.projects{
+  grid-column:span 7;
+}
+
+.tasks{
+  grid-column:span 5;
+}
+
+.tools{
+  grid-column:span 7;
+}
+
+.focus{
+  grid-column:span 5;
 }
 
 .notes{
-  width:100%;
-  min-height:160px;
-  resize:vertical;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  outline:none;
-  background:rgba(0,0,0,.2);
-  color:var(--text);
+  grid-column:span 7;
 }
 
-.footer{
-  padding:25px 0 5px;
-  text-align:center;
+.activity{
+  grid-column:span 5;
+}
+
+.project{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.055);
+}
+
+.project:last-child{
+  border-bottom:0;
+}
+
+.project-icon{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  background:rgba(124,92,255,.12);
+  border:1px solid rgba(124,92,255,.2);
+}
+
+.project-info{
+  flex:1;
+  min-width:0;
+}
+
+.project-info strong{
+  display:block;
+  font-size:13px;
+}
+
+.project-info small{
   color:var(--muted);
-  font-size:9px;
-  letter-spacing:.15em;
+}
+
+.live{
+  color:var(--green);
+  font-size:10px;
+}
+
+.open{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:white;
+  border-radius:8px;
+  padding:7px 9px;
+}
+
+.task-input{
+  display:flex;
+  gap:7px;
+  margin-bottom:10px;
+}
+
+.task-input input{
+  flex:1;
+  min-width:0;
+  background:rgba(0,0,0,.2);
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:9px;
+  color:white;
+  outline:0;
+}
+
+.add{
+  width:38px;
+  border:0;
+  border-radius:9px;
+  background:var(--accent);
+  color:white;
+  font-size:20px;
+}
+
+.task{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.task input{
+  accent-color:var(--accent);
+}
+
+.task span{
+  font-size:12px;
+  flex:1;
+}
+
+.task.done span{
+  text-decoration:line-through;
+  color:#62697a;
+}
+
+.tool-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+
+.tool{
+  min-height:70px;
+  padding:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+  border-radius:11px;
+  color:white;
+  text-align:left;
+  transition:.2s;
+}
+
+.tool:hover{
+  transform:translateY(-2px);
+  border-color:rgba(124,92,255,.35);
+  background:rgba(124,92,255,.08);
+}
+
+.tool b{
+  display:block;
+  font-size:12px;
+  margin-bottom:5px;
+}
+
+.tool small{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.timer{
+  text-align:center;
+  padding:12px 0 4px;
+}
+
+.timer-display{
+  font-size:58px;
+  font-weight:850;
+  letter-spacing:-.06em;
+  font-variant-numeric:tabular-nums;
+}
+
+.timer-mode{
+  color:var(--accent2);
+  font-size:10px;
+  letter-spacing:.18em;
+  font-weight:800;
+}
+
+.timer-actions{
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  margin-top:13px;
+}
+
+.timer-actions button{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:white;
+  border-radius:9px;
+  padding:8px 12px;
+}
+
+.timer-actions .primary{
+  background:var(--accent);
+  border-color:transparent;
+}
+
+.notes textarea{
+  width:100%;
+  min-height:155px;
+  resize:vertical;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:rgba(0,0,0,.2);
+  color:white;
+  outline:0;
+  padding:12px;
+  line-height:1.6;
+}
+
+.activity-item{
+  display:flex;
+  gap:10px;
+  padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.activity-dot{
+  width:8px;
+  height:8px;
+  margin-top:5px;
+  border-radius:50%;
+  background:var(--accent2);
+  box-shadow:0 0 10px var(--accent2);
+}
+
+.activity-item strong{
+  display:block;
+  font-size:12px;
+}
+
+.activity-item small{
+  color:var(--muted);
 }
 
 .modal{
   position:fixed;
   inset:0;
-  z-index:100;
   display:none;
-  place-items:center;
-  padding:20px;
+  align-items:center;
+  justify-content:center;
   background:rgba(0,0,0,.65);
   backdrop-filter:blur(10px);
-}
-
-.modal.open{display:grid}
-
-.modal-box{
-  width:min(650px,100%);
-  background:var(--panel2);
-  border:1px solid var(--border);
-  border-radius:17px;
+  z-index:50;
   padding:20px;
 }
 
-.modal-box h2{margin-bottom:14px}
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:min(600px,100%);
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:#0d0f17;
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+
+.modal-box h2{
+  margin:0 0 15px;
+}
+
+.modal-box textarea,
+.modal-box input{
+  width:100%;
+  background:#080a0f;
+  color:white;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  outline:0;
+}
 
 .modal-actions{
   display:flex;
   justify-content:flex-end;
-  gap:7px;
-  margin-top:9px;
+  gap:8px;
+  margin-top:12px;
 }
 
 .modal-actions button{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.05);
+  color:white;
   padding:9px 13px;
-  border-radius:8px;
-  background:rgba(255,255,255,.06);
+  border-radius:9px;
+}
+
+.modal-actions .primary{
+  background:var(--accent);
+  border:0;
 }
 
 .toast{
   position:fixed;
-  right:20px;
-  bottom:20px;
-  z-index:200;
-  padding:11px 15px;
+  right:22px;
+  bottom:22px;
+  padding:12px 15px;
   border:1px solid var(--border);
-  border-radius:10px;
-  background:var(--panel2);
-  color:var(--text);
-  font-size:11px;
+  border-radius:11px;
+  background:#11141d;
+  color:white;
+  box-shadow:var(--shadow);
+  transform:translateY(100px);
   opacity:0;
-  transform:translateY(10px);
-  pointer-events:none;
-  transition:.25s;
+  transition:.3s;
+  z-index:100;
+  font-size:12px;
 }
 
 .toast.show{
-  opacity:1;
   transform:translateY(0);
+  opacity:1;
 }
 
-@keyframes breathe{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.08)}
+.mobile-menu{
+  display:none;
 }
 
-@media(max-width:1100px){
-  .layout{grid-template-columns:190px 1fr}
-  .rightbar{display:none}
-  .stats{grid-template-columns:repeat(2,1fr)}
+@media(max-width:1050px){
+  .projects,.tasks,.tools,.focus,.notes,.activity{
+    grid-column:span 12;
+  }
 }
 
-@media(max-width:760px){
-  .app{grid-template-rows:62px 1fr}
-  header{height:62px;padding:0 16px}
-  .layout{display:block}
-  .sidebar{display:none}
-  .main{padding:20px 15px}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .dashboard{grid-template-columns:1fr}
-  .quick{grid-template-columns:repeat(2,1fr)}
-  .project{align-items:flex-start;flex-direction:column}
+@media(max-width:800px){
+  .app{
+    display:block;
+  }
+
+  .sidebar{
+    position:fixed;
+    left:-270px;
+    width:240px;
+    transition:.25s;
+    z-index:40;
+  }
+
+  .sidebar.open{
+    left:0;
+  }
+
+  .mobile-menu{
+    display:block;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  .hero{
+    padding:23px;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .tool-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 }
 
-@media(max-width:450px){
-  .stats{grid-template-columns:1fr 1fr}
-  .big{font-size:22px}
+@media(max-width:500px){
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .timer-display{
+    font-size:45px;
+  }
 }
 </style>
 </head>
@@ -575,449 +747,358 @@ h1{
 <body>
 
 <canvas id="stars"></canvas>
-<div class="noise"></div>
 
 <div class="app">
 
-<header>
-  <div class="brand">
-    <div class="brand-orb"></div>
-    NEXUS
-  </div>
+  <aside class="sidebar" id="sidebar">
 
-  <div class="status">
-    <span class="status-dot"></span>
-    SYSTEM ONLINE
-  </div>
-</header>
+    <div class="logo">
+      <div class="logo-orb"></div>
+      <span>NEXUS</span>
+    </div>
 
-<div class="layout">
+    <div class="nav-label">WORKSPACE</div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
+    <div class="nav">
+      <button class="active" onclick="scrollToId('home')">⌂ Dashboard</button>
+      <button onclick="scrollToId('projects')">◈ Projects</button>
+      <button onclick="scrollToId('tasks')">✓ Tasks</button>
+      <button onclick="scrollToId('tools')">⚡ Tools</button>
+      <button onclick="scrollToId('notes')">▣ Notes</button>
+    </div>
 
-  <div class="section-label">Workspace</div>
+    <div class="nav-label">QUICK LAUNCH</div>
 
-  <div class="nav">
-    <button class="active" onclick="scrollToId('top')">⌂ Dashboard</button>
-    <button onclick="scrollToId('projects')">▣ Projects</button>
-    <button onclick="scrollToId('activity')">◉ Activity</button>
-    <button onclick="openNotes()">✎ Notes</button>
-  </div>
+    <div class="nav">
+      <button onclick="openURL('https://github.com/')">GitHub ↗</button>
+      <button onclick="openURL('https://chatgpt.com/')">AI ↗</button>
+      <button onclick="openURL('https://vercel.com/')">Vercel ↗</button>
+    </div>
 
-  <div class="section-label">Tools</div>
-
-  <div class="nav">
-    <button onclick="focusTimer()">◷ Focus</button>
-    <button onclick="runCommand('/help')">⌘ Commands</button>
-    <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
-  </div>
-
-  <div class="section-label">Quick Launch</div>
-
-  <div class="nav">
-    <button onclick="openURL('https://github.com/Srikar2121')">GitHub</button>
-    <button onclick="openURL('https://orbitintelligenceai.lovable.app')">Orbit</button>
-    <button onclick="openURL('https://srikar2121.github.io/SrikarPortfolio/')">Portfolio</button>
-  </div>
-
-</aside>
-
-
-<!-- MAIN -->
-<main class="main">
-
-<div class="container" id="top">
-
-<section class="hero">
-
-  <div class="eyebrow">Personal Operating System</div>
-
-  <h1>NEXUS</h1>
-
-  <p>
-    One command center for your projects, deployments, ideas,
-    tools and everything you're building.
-  </p>
-
-</section>
-
-
-<!-- STATS -->
-
-<section class="grid stats">
-
-  <div class="card">
-    <div class="label">Projects</div>
-    <div class="big accent">9</div>
-  </div>
-
-  <div class="card">
-    <div class="label">Live</div>
-    <div class="big green">4+</div>
-  </div>
-
-  <div class="card">
-    <div class="label">Current</div>
-    <div class="big">Nexus</div>
-  </div>
-
-  <div class="card">
-    <div class="label">Build Mode</div>
-    <div class="big">ACTIVE</div>
-  </div>
-
-</section>
-
-
-<!-- DASHBOARD -->
-
-<section class="dashboard">
-
-<div class="card" id="projects">
-
-  <div class="label">Projects</div>
-
-  <div class="projects">
-
-    <div class="project">
-      <div class="project-info">
-        <div class="project-name">
-          <span class="dot"></span>Orbit
+    <div class="sidebar-bottom">
+      <div class="status">
+        <div class="status-top">
+          <span class="dot"></span>
+          SYSTEM ONLINE
         </div>
-        <div class="project-desc">
-          AI workspace / main platform
-        </div>
-      </div>
-
-      <div class="project-actions">
-        <button onclick="openURL('https://orbitintelligenceai.lovable.app')">
-          Live
-        </button>
+        <strong id="sideTime">--:--</strong>
       </div>
     </div>
 
+  </aside>
 
-    <div class="project">
-      <div class="project-info">
-        <div class="project-name">
-          <span class="dot"></span>Nexus
-        </div>
-        <div class="project-desc">
-          Personal developer command center
-        </div>
+  <main class="main" id="home">
+
+    <div class="topbar">
+
+      <div class="breadcrumb">
+        Workspace / <strong>Dashboard</strong>
       </div>
 
-      <div class="project-actions">
-        <button onclick="location.reload()">Open</button>
-      </div>
-    </div>
-
-
-    <div class="project">
-      <div class="project-info">
-        <div class="project-name">
-          <span class="dot"></span>Portfolio
-        </div>
-        <div class="project-desc">
-          Personal portfolio website
-        </div>
-      </div>
-
-      <div class="project-actions">
-        <button onclick="openURL('https://srikar2121.github.io/SrikarPortfolio/')">
-          Live
-        </button>
-      </div>
-    </div>
-
-
-    <div class="project">
-      <div class="project-info">
-        <div class="project-name">
-          <span class="dot"></span>Happy Dussehra
-        </div>
-        <div class="project-desc">
-          Festival microsite
-        </div>
-      </div>
-
-      <div class="project-actions">
-        <button onclick="openURL('https://srikar2121.github.io/HappyDussehra/')">
-          Live
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-
-<div class="card" id="activity">
-
-  <div class="label">Activity</div>
-
-  <div class="activity">
-
-    <div class="activity-item">
-      <div class="activity-icon">🚀</div>
-      <div>
-        <div class="activity-text">Nexus deployed</div>
-        <div class="activity-time">Latest deployment</div>
-      </div>
-    </div>
-
-    <div class="activity-item">
-      <div class="activity-icon">⚡</div>
-      <div>
-        <div class="activity-text">Nexus v4 initialized</div>
-        <div class="activity-time">Current build</div>
-      </div>
-    </div>
-
-    <div class="activity-item">
-      <div class="activity-icon">🛰️</div>
-      <div>
-        <div class="activity-text">Command center online</div>
-        <div class="activity-time">System event</div>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-</section>
-
-
-<!-- QUICK LAUNCH -->
-
-<div class="card" style="margin-top:13px">
-
-  <div class="label">Quick Launch</div>
-
-  <div class="quick">
-
-    <button onclick="openURL('https://github.com/Srikar2121')">
-      🐙<br>GitHub
-    </button>
-
-    <button onclick="openURL('https://orbitintelligenceai.lovable.app')">
-      🧠<br>Orbit
-    </button>
-
-    <button onclick="openURL('https://srikar2121.github.io/SrikarPortfolio/')">
-      🌐<br>Portfolio
-    </button>
-
-    <button onclick="openURL('https://github.com/Srikar2121/Nexus')">
-      🛰️<br>Repository
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- CLOCK + COMMAND -->
-
-<div class="dashboard" style="margin-top:13px">
-
-<div class="card">
-
-  <div class="label">System Clock</div>
-
-  <div class="clock" id="clock">--:--:--</div>
-  <div class="date" id="date">Loading...</div>
-
-</div>
-
-
-<div class="card">
-
-  <div class="label">Command Interface</div>
-
-  <div class="command">
-    <input
-      id="commandInput"
-      placeholder="Try /help..."
-      autocomplete="off"
-    >
-
-    <button onclick="executeCommand()">Run</button>
-  </div>
-
-  <div class="output" id="output">
-    Nexus command interface ready.
-  </div>
-
-</div>
-
-</div>
-
-
-<!-- NOTES -->
-
-<div class="card" style="margin-top:13px">
-
-  <div class="label">Persistent Notes</div>
-
-  <textarea
-    class="notes"
-    id="notes"
-    placeholder="Ideas, tasks, plans..."
-  ></textarea>
-
-  <div style="margin-top:8px">
-    <button class="action" onclick="saveNotes()">Save Notes</button>
-    <button class="action" onclick="clearNotes()">Clear</button>
-  </div>
-
-</div>
-
-
-<div class="footer">
-  NEXUS • PERSONAL OPERATING SYSTEM • ONLINE
-</div>
-
-</div>
-
-</main>
-
-
-<!-- RIGHT PANEL -->
-
-<aside class="rightbar">
-
-  <div class="section-label">Telemetry</div>
-
-  <div class="card">
-
-    <div class="telemetry">
-
-      <div>
-        <div class="telemetry-row">
-          <span>Core</span>
-          <strong>100%</strong>
-        </div>
-        <div class="bar">
-          <span style="width:100%"></span>
-        </div>
-      </div>
-
-      <div>
-        <div class="telemetry-row">
-          <span>Network</span>
-          <strong>98%</strong>
-        </div>
-        <div class="bar">
-          <span style="width:98%"></span>
-        </div>
-      </div>
-
-      <div>
-        <div class="telemetry-row">
-          <span>Memory</span>
-          <strong>72%</strong>
-        </div>
-        <div class="bar">
-          <span style="width:72%"></span>
-        </div>
-      </div>
-
-      <div>
-        <div class="telemetry-row">
-          <span>Stability</span>
-          <strong>99%</strong>
-        </div>
-        <div class="bar">
-          <span style="width:99%"></span>
-        </div>
+      <div class="top-actions">
+        <button class="icon-btn mobile-menu" onclick="toggleSidebar()">☰</button>
+        <button class="icon-btn" onclick="openFullscreen()">⛶</button>
       </div>
 
     </div>
 
-  </div>
+    <section class="hero">
 
+      <div class="eyebrow">PERSONAL COMMAND CENTER</div>
 
-  <div class="section-label">Focus</div>
+      <h1>
+        Welcome to<br>
+        <span class="gradient">NEXUS.</span>
+      </h1>
 
-  <div class="card">
+      <p>
+        One place for your projects, tasks, notes, developer tools,
+        focus sessions and everything you are building.
+      </p>
 
-    <div class="timer" id="timer">05:00</div>
+      <div class="command">
+        <span>›</span>
+        <input
+          id="commandInput"
+          placeholder="Try /projects, /focus, /github..."
+          onkeydown="commandKey(event)"
+        >
+        <button onclick="runCommand()">RUN</button>
+      </div>
 
-    <div class="timer-actions">
-      <button onclick="startTimer()">Start</button>
-      <button onclick="stopTimer()">Stop</button>
-      <button onclick="resetTimer()">Reset</button>
+    </section>
+
+    <div class="grid">
+
+      <!-- STATS -->
+
+      <section class="stats">
+
+        <div class="stat">
+          <small>Projects</small>
+          <strong>9</strong>
+          <em>ACTIVE WORKSPACE</em>
+        </div>
+
+        <div class="stat">
+          <small>Live Sites</small>
+          <strong>4+</strong>
+          <em>DEPLOYED</em>
+        </div>
+
+        <div class="stat">
+          <small>Tasks</small>
+          <strong id="taskCount">0</strong>
+          <em>IN YOUR LIST</em>
+        </div>
+
+        <div class="stat">
+          <small>Focus</small>
+          <strong id="focusStat">0</strong>
+          <em>SESSIONS</em>
+        </div>
+
+      </section>
+
+      <!-- PROJECTS -->
+
+      <section class="card projects" id="projects">
+
+        <div class="card-header">
+          <div>
+            <div class="card-title">Projects</div>
+            <div class="card-sub">Your current builds</div>
+          </div>
+          <button class="open" onclick="toast('Project creation coming next')">+ New</button>
+        </div>
+
+        <div class="card-body">
+
+          <div class="project">
+            <div class="project-icon">◉</div>
+            <div class="project-info">
+              <strong>Orbit Intelligence</strong>
+              <small>AI workspace</small>
+            </div>
+            <span class="live">● LIVE</span>
+            <button class="open" onclick="openURL('https://orbitintelligenceai.lovable.app/')">Open</button>
+          </div>
+
+          <div class="project">
+            <div class="project-icon">N</div>
+            <div class="project-info">
+              <strong>Nexus</strong>
+              <small>Command center</small>
+            </div>
+            <span class="live">● LIVE</span>
+            <button class="open" onclick="openURL('https://srikar2121.github.io/Nexus/')">Open</button>
+          </div>
+
+          <div class="project">
+            <div class="project-icon">D</div>
+            <div class="project-info">
+              <strong>Happy Dussehra</strong>
+              <small>Celebration website</small>
+            </div>
+            <span class="live">● LIVE</span>
+            <button class="open" onclick="openURL('https://srikar2121.github.io/HappyDussehra/')">Open</button>
+          </div>
+
+          <div class="project">
+            <div class="project-icon">P</div>
+            <div class="project-info">
+              <strong>Portfolio</strong>
+              <small>Personal portfolio</small>
+            </div>
+            <span class="live">● LIVE</span>
+            <button class="open" onclick="openURL('https://srikar2121.github.io/SrikarPortfolio/')">Open</button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- TASKS -->
+
+      <section class="card tasks" id="tasks">
+
+        <div class="card-header">
+          <div>
+            <div class="card-title">Tasks</div>
+            <div class="card-sub">Stay on track</div>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div class="task-input">
+            <input id="taskInput" placeholder="Add a task..." onkeydown="taskKey(event)">
+            <button class="add" onclick="addTask()">+</button>
+          </div>
+
+          <div id="taskList"></div>
+
+        </div>
+
+      </section>
+
+      <!-- TOOLS -->
+
+      <section class="card tools" id="tools">
+
+        <div class="card-header">
+          <div>
+            <div class="card-title">Developer Tools</div>
+            <div class="card-sub">Useful utilities, instantly</div>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div class="tool-grid">
+
+            <button class="tool" onclick="tool('UUID')">
+              <b>🔑 UUID</b>
+              <small>Generate a UUID</small>
+            </button>
+
+            <button class="tool" onclick="tool('Timestamp')">
+              <b>◷ Timestamp</b>
+              <small>Get current timestamp</small>
+            </button>
+
+            <button class="tool" onclick="tool('Color')">
+              <b>🎨 Color</b>
+              <small>Random hex color</small>
+            </button>
+
+            <button class="tool" onclick="tool('Password')">
+              <b>🔐 Password</b>
+              <small>Generate secure text</small>
+            </button>
+
+            <button class="tool" onclick="tool('JSON')">
+              <b>{ } JSON</b>
+              <small>Open JSON helper</small>
+            </button>
+
+            <button class="tool" onclick="tool('Markdown')">
+              <b>MD Markdown</b>
+              <small>Markdown workspace</small>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- FOCUS -->
+
+      <section class="card focus">
+
+        <div class="card-header">
+          <div>
+            <div class="card-title">Focus Mode</div>
+            <div class="card-sub">Work without distractions</div>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div class="timer">
+
+            <div class="timer-mode">FOCUS SESSION</div>
+
+            <div class="timer-display" id="timer">
+              25:00
+            </div>
+
+            <div class="timer-actions">
+              <button class="primary" onclick="toggleTimer()" id="timerBtn">Start</button>
+              <button onclick="resetTimer()">Reset</button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- NOTES -->
+
+      <section class="card notes" id="notes">
+
+        <div class="card-header">
+          <div>
+            <div class="card-title">Quick Notes</div>
+            <div class="card-sub">Saved automatically</div>
+          </div>
+          <span class="card-sub" id="saveStatus">Saved</span>
+        </div>
+
+        <div class="card-body">
+          <textarea
+            id="notesArea"
+            placeholder="Ideas, commands, reminders, project plans..."
+            oninput="saveNotes()"
+          ></textarea>
+        </div>
+
+      </section>
+
+      <!-- ACTIVITY -->
+
+      <section class="card activity">
+
+        <div class="card-header">
+          <div>
+            <div class="card-title">Activity</div>
+            <div class="card-sub">Recent Nexus events</div>
+          </div>
+        </div>
+
+        <div class="card-body" id="activityList">
+
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <strong>Nexus initialized</strong>
+              <small>Command center ready</small>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <strong>Workspace loaded</strong>
+              <small>Projects synchronized</small>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
     </div>
 
-  </div>
-
-
-  <div class="section-label">System</div>
-
-  <div class="card">
-
-    <div class="telemetry">
-
-      <div class="telemetry-row">
-        <span>Version</span>
-        <strong>v4.0</strong>
-      </div>
-
-      <div class="telemetry-row">
-        <span>Mode</span>
-        <strong>BUILD</strong>
-      </div>
-
-      <div class="telemetry-row">
-        <span>Environment</span>
-        <strong>WEB</strong>
-      </div>
-
-      <div class="telemetry-row">
-        <span>Status</span>
-        <strong class="green">ONLINE</strong>
-      </div>
-
-    </div>
-
-  </div>
-
-</aside>
+  </main>
 
 </div>
-</div>
 
-
-<!-- NOTES MODAL -->
-
-<div class="modal" id="notesModal">
-
+<div class="modal" id="modal">
   <div class="modal-box">
-
-    <h2>Notes</h2>
-
-    <textarea
-      class="notes"
-      id="modalNotes"
-      placeholder="Write something..."
-    ></textarea>
+    <h2 id="modalTitle">Tool</h2>
+    <textarea id="modalOutput" readonly></textarea>
 
     <div class="modal-actions">
-      <button onclick="closeNotes()">Close</button>
-      <button onclick="saveModalNotes()">Save</button>
+      <button onclick="closeModal()">Close</button>
+      <button class="primary" onclick="copyOutput()">Copy</button>
     </div>
-
   </div>
-
 </div>
 
-
 <div class="toast" id="toast"></div>
-
 
 <script>
 
@@ -1025,50 +1106,50 @@ h1{
    STARFIELD
 ========================= */
 
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
 
-let stars=[];
+let stars = [];
 
-function resize(){
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
+function resizeCanvas(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 
-  stars=Array.from(
-    {length:Math.min(180,Math.floor(innerWidth/7))},
-    ()=>({
+  stars = Array.from(
+    {length: Math.min(180, Math.floor(innerWidth / 7))},
+    () => ({
       x:Math.random()*canvas.width,
       y:Math.random()*canvas.height,
-      r:Math.random()*1.4+.2,
-      s:Math.random()*.35+.05
+      z:Math.random()*1+.2,
+      size:Math.random()*1.4+.2
     })
   );
 }
 
-function animateStars(){
+function drawStars(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  stars.forEach(s=>{
-    s.y+=s.s;
+  for(const s of stars){
+    s.y += s.z * .15;
 
-    if(s.y>canvas.height){
-      s.y=0;
-      s.x=Math.random()*canvas.width;
+    if(s.y > canvas.height){
+      s.y = 0;
+      s.x = Math.random()*canvas.width;
     }
 
+    ctx.globalAlpha = .25 + s.z*.45;
+    ctx.fillStyle = "#fff";
     ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,255,255,.65)";
+    ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
     ctx.fill();
-  });
+  }
 
-  requestAnimationFrame(animateStars);
+  requestAnimationFrame(drawStars);
 }
 
-resize();
-animateStars();
-
-addEventListener("resize",resize);
+addEventListener("resize",resizeCanvas);
+resizeCanvas();
+drawStars();
 
 
 /* =========================
@@ -1077,26 +1158,28 @@ addEventListener("resize",resize);
 
 function updateClock(){
 
-  const now=new Date();
+  const now = new Date();
 
-  document.getElementById("clock").textContent=
-    now.toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit",
-      second:"2-digit"
-    });
+  const time = now.toLocaleTimeString([],{
+    hour:"2-digit",
+    minute:"2-digit"
+  });
 
-  document.getElementById("date").textContent=
-    now.toLocaleDateString([],{
-      weekday:"long",
-      year:"numeric",
-      month:"long",
-      day:"numeric"
-    });
+  const full = now.toLocaleString([],{
+    weekday:"short",
+    month:"short",
+    day:"numeric",
+    hour:"2-digit",
+    minute:"2-digit"
+  });
+
+  document.getElementById("sideTime").textContent = time;
+  document.title = `Nexus — ${time}`;
+
 }
 
-updateClock();
 setInterval(updateClock,1000);
+updateClock();
 
 
 /* =========================
@@ -1104,105 +1187,163 @@ setInterval(updateClock,1000);
 ========================= */
 
 function scrollToId(id){
+  document.getElementById(id)?.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
 
-  document.getElementById(id)
-    ?.scrollIntoView({
-      behavior:"smooth"
-    });
+  document.getElementById("sidebar").classList.remove("open");
+}
+
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("open");
 }
 
 
 /* =========================
-   LINKS
+   URL
 ========================= */
 
 function openURL(url){
-  window.open(url,"_blank","noopener,noreferrer");
+  window.open(url,"_blank");
 }
+
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer;
+
+function toast(message){
+
+  const el = document.getElementById("toast");
+
+  el.textContent = message;
+  el.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(()=>{
+    el.classList.remove("show");
+  },2500);
+}
+
+
+/* =========================
+   TASKS
+========================= */
+
+let tasks = JSON.parse(localStorage.getItem("nexus_tasks") || "[]");
+
+function saveTasks(){
+  localStorage.setItem("nexus_tasks",JSON.stringify(tasks));
+}
+
+function renderTasks(){
+
+  const list = document.getElementById("taskList");
+
+  list.innerHTML = "";
+
+  tasks.forEach((task,index)=>{
+
+    const row = document.createElement("div");
+
+    row.className = "task" + (task.done ? " done" : "");
+
+    row.innerHTML = `
+      <input type="checkbox" ${task.done ? "checked" : ""}>
+      <span>${escapeHTML(task.text)}</span>
+      <button class="open">×</button>
+    `;
+
+    row.querySelector("input").onchange = ()=>{
+      tasks[index].done = !tasks[index].done;
+      saveTasks();
+      renderTasks();
+    };
+
+    row.querySelector("button").onclick = ()=>{
+      tasks.splice(index,1);
+      saveTasks();
+      renderTasks();
+      addActivity("Task removed");
+    };
+
+    list.appendChild(row);
+
+  });
+
+  const remaining = tasks.filter(t=>!t.done).length;
+
+  document.getElementById("taskCount").textContent = remaining;
+}
+
+function addTask(){
+
+  const input = document.getElementById("taskInput");
+  const text = input.value.trim();
+
+  if(!text) return;
+
+  tasks.unshift({
+    text,
+    done:false
+  });
+
+  saveTasks();
+
+  input.value = "";
+
+  renderTasks();
+
+  addActivity("New task added");
+
+  toast("Task added");
+}
+
+function taskKey(e){
+
+  if(e.key === "Enter"){
+    addTask();
+  }
+
+}
+
+function escapeHTML(text){
+
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+
+}
+
+renderTasks();
 
 
 /* =========================
    NOTES
 ========================= */
 
-const notes=document.getElementById("notes");
+const notes = document.getElementById("notesArea");
 
-notes.value=
-  localStorage.getItem("nexusNotes") || "";
+notes.value = localStorage.getItem("nexus_notes") || "";
+
+let notesTimeout;
 
 function saveNotes(){
 
-  localStorage.setItem(
-    "nexusNotes",
-    notes.value
-  );
+  localStorage.setItem("nexus_notes",notes.value);
 
-  toast("Notes saved.");
-}
+  document.getElementById("saveStatus").textContent = "Saving...";
 
-function clearNotes(){
+  clearTimeout(notesTimeout);
 
-  notes.value="";
+  notesTimeout = setTimeout(()=>{
+    document.getElementById("saveStatus").textContent = "Saved";
+  },500);
 
-  localStorage.removeItem("nexusNotes");
-
-  toast("Notes cleared.");
-}
-
-
-/* =========================
-   MODAL NOTES
-========================= */
-
-function openNotes(){
-
-  document.getElementById("modalNotes").value=
-    localStorage.getItem("nexusNotes") || "";
-
-  document.getElementById("notesModal")
-    .classList.add("open");
-}
-
-function closeNotes(){
-
-  document.getElementById("notesModal")
-    .classList.remove("open");
-}
-
-function saveModalNotes(){
-
-  localStorage.setItem(
-    "nexusNotes",
-    document.getElementById("modalNotes").value
-  );
-
-  notes.value=
-    document.getElementById("modalNotes").value;
-
-  closeNotes();
-
-  toast("Notes saved.");
-}
-
-
-/* =========================
-   FULLSCREEN
-========================= */
-
-function toggleFullscreen(){
-
-  if(!document.fullscreenElement){
-
-    document.documentElement.requestFullscreen();
-
-    toast("Fullscreen enabled.");
-
-  }else{
-
-    document.exitFullscreen();
-
-    toast("Fullscreen disabled.");
-  }
 }
 
 
@@ -1210,66 +1351,200 @@ function toggleFullscreen(){
    FOCUS TIMER
 ========================= */
 
-let seconds=300;
-let timerInterval=null;
+let seconds = 25 * 60;
+let timerRunning = false;
+let timerInterval = null;
+
+let sessions = Number(
+  localStorage.getItem("nexus_focus_sessions") || 0
+);
+
+document.getElementById("focusStat").textContent = sessions;
 
 function renderTimer(){
 
-  const m=Math.floor(seconds/60)
+  const mins = Math.floor(seconds/60)
     .toString()
     .padStart(2,"0");
 
-  const s=(seconds%60)
+  const secs = (seconds%60)
     .toString()
     .padStart(2,"0");
 
-  document.getElementById("timer").textContent=
-    `${m}:${s}`;
+  document.getElementById("timer").textContent =
+    `${mins}:${secs}`;
 }
 
-function startTimer(){
+function toggleTimer(){
 
-  if(timerInterval)return;
+  if(timerRunning){
 
-  toast("Focus mode started.");
+    clearInterval(timerInterval);
 
-  timerInterval=setInterval(()=>{
+    timerRunning = false;
 
-    if(seconds>0){
+    document.getElementById("timerBtn").textContent = "Start";
 
-      seconds--;
+    toast("Focus paused");
+
+    return;
+  }
+
+  timerRunning = true;
+
+  document.getElementById("timerBtn").textContent = "Pause";
+
+  timerInterval = setInterval(()=>{
+
+    seconds--;
+
+    renderTimer();
+
+    if(seconds <= 0){
+
+      clearInterval(timerInterval);
+
+      timerRunning = false;
+
+      sessions++;
+
+      localStorage.setItem(
+        "nexus_focus_sessions",
+        sessions
+      );
+
+      document.getElementById("focusStat").textContent =
+        sessions;
+
+      document.getElementById("timerBtn").textContent = "Start";
+
+      seconds = 25*60;
+
       renderTimer();
 
-    }else{
+      addActivity("Focus session completed");
 
-      stopTimer();
-      toast("Focus session complete.");
+      toast("🔥 Focus session complete!");
+
     }
 
   },1000);
-}
 
-function stopTimer(){
+  addActivity("Focus session started");
 
-  clearInterval(timerInterval);
-  timerInterval=null;
-
-  toast("Focus mode stopped.");
 }
 
 function resetTimer(){
 
-  stopTimer();
+  clearInterval(timerInterval);
 
-  seconds=300;
+  timerRunning = false;
+  seconds = 25*60;
+
+  document.getElementById("timerBtn").textContent = "Start";
 
   renderTimer();
 
-  toast("Timer reset.");
 }
 
-function focusTimer(){
-  startTimer();
+renderTimer();
+
+
+/* =========================
+   DEVELOPER TOOLS
+========================= */
+
+function tool(type){
+
+  let output = "";
+
+  if(type === "UUID"){
+
+    output = crypto.randomUUID();
+
+  }
+
+  if(type === "Timestamp"){
+
+    output = Math.floor(Date.now()/1000);
+
+  }
+
+  if(type === "Color"){
+
+    output =
+      "#" +
+      Math.floor(Math.random()*16777215)
+      .toString(16)
+      .padStart(6,"0");
+
+  }
+
+  if(type === "Password"){
+
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+
+    output = "";
+
+    for(let i=0;i<24;i++){
+      output += chars[Math.floor(Math.random()*chars.length)];
+    }
+
+  }
+
+  if(type === "JSON"){
+
+    output =
+`{
+  "nexus": "developer-tool",
+  "status": "ready",
+  "timestamp": ${Date.now()}
+}`;
+
+  }
+
+  if(type === "Markdown"){
+
+    output =
+`# Markdown
+
+## Quick Start
+
+**Bold**
+*Italic*
+\`code\`
+
+- Item
+- Item
+- Item`;
+
+  }
+
+  document.getElementById("modalTitle").textContent =
+    `${type} Tool`;
+
+  document.getElementById("modalOutput").value =
+    output;
+
+  document.getElementById("modal").classList.add("show");
+
+  addActivity(`${type} tool opened`);
+
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+function copyOutput(){
+
+  navigator.clipboard.writeText(
+    document.getElementById("modalOutput").value
+  );
+
+  toast("Copied to clipboard");
+
 }
 
 
@@ -1277,200 +1552,218 @@ function focusTimer(){
    COMMAND SYSTEM
 ========================= */
 
-const commands={
+function commandKey(e){
 
-  help(){
-    return `/help       Show commands
-/projects   Show projects
-/orbit      Open Orbit
-/github     Open GitHub
-/portfolio  Open portfolio
-/deploy     Show deployment info
-/notes      Open notes
-/focus      Start focus timer
-/stop       Stop focus timer
-/time       Show time
-/date       Show date
-/fullscreen Toggle fullscreen
-/clear      Clear output`;
-  },
-
-  projects(){
-    return `Projects: 9
-Live: 4+
-Current: Nexus
-Mode: BUILD`;
-  },
-
-  orbit(){
-    openURL(
-      "https://orbitintelligenceai.lovable.app"
-    );
-
-    return "Opening Orbit...";
-  },
-
-  github(){
-    openURL(
-      "https://github.com/Srikar2121"
-    );
-
-    return "Opening GitHub...";
-  },
-
-  portfolio(){
-    openURL(
-      "https://srikar2121.github.io/SrikarPortfolio/"
-    );
-
-    return "Opening portfolio...";
-  },
-
-  deploy(){
-    return `Nexus
-Status: LIVE
-Repository: Srikar2121/Nexus
-Deployment: GitHub Pages`;
-  },
-
-  notes(){
-    openNotes();
-    return "Opening notes...";
-  },
-
-  focus(){
-    startTimer();
-    return "Focus timer started.";
-  },
-
-  stop(){
-    stopTimer();
-    return "Focus timer stopped.";
-  },
-
-  time(){
-    return new Date().toLocaleTimeString();
-  },
-
-  date(){
-    return new Date().toLocaleDateString();
-  },
-
-  fullscreen(){
-    toggleFullscreen();
-    return "Fullscreen command executed.";
-  },
-
-  clear(){
-    return "";
+  if(e.key === "Enter"){
+    runCommand();
   }
 
-};
-
-
-function runCommand(command){
-
-  const name=command
-    .replace("/","")
-    .trim()
-    .toLowerCase();
-
-  if(commands[name]){
-
-    const result=commands[name]();
-
-    if(name==="clear"){
-      document.getElementById("output").textContent="";
-      return;
-    }
-
-    document.getElementById("output")
-      .textContent=result;
-
-  }else{
-
-    document.getElementById("output")
-      .textContent=
-      `Unknown command: ${command}\nType /help`;
-  }
 }
 
+function runCommand(){
 
-function executeCommand(){
-
-  const input=
+  const input =
     document.getElementById("commandInput");
 
-  const value=input.value.trim();
+  const command =
+    input.value.trim().toLowerCase();
 
-  if(!value)return;
+  if(!command) return;
 
-  runCommand(value);
+  input.value = "";
 
-  input.value="";
+  if(command === "/projects"){
+    scrollToId("projects");
+    toast("Opening projects");
+    return;
+  }
+
+  if(command === "/tasks"){
+    scrollToId("tasks");
+    toast("Opening tasks");
+    return;
+  }
+
+  if(command === "/tools"){
+    scrollToId("tools");
+    toast("Opening developer tools");
+    return;
+  }
+
+  if(command === "/notes"){
+    scrollToId("notes");
+    toast("Opening notes");
+    return;
+  }
+
+  if(command === "/focus"){
+    document.querySelector(".focus")
+      .scrollIntoView({
+        behavior:"smooth"
+      });
+
+    toast("Focus mode ready");
+    return;
+  }
+
+  if(command === "/github"){
+    openURL("https://github.com/");
+    return;
+  }
+
+  if(command === "/orbit"){
+    openURL("https://orbitintelligenceai.lovable.app/");
+    return;
+  }
+
+  if(command === "/nexus"){
+    openURL("https://srikar2121.github.io/Nexus/");
+    return;
+  }
+
+  if(command === "/portfolio"){
+    openURL("https://srikar2121.github.io/SrikarPortfolio/");
+    return;
+  }
+
+  if(command === "/dussehra"){
+    openURL("https://srikar2121.github.io/HappyDussehra/");
+    return;
+  }
+
+  if(command === "/time"){
+
+    toast(
+      new Date().toLocaleTimeString()
+    );
+
+    return;
+  }
+
+  if(command === "/date"){
+
+    toast(
+      new Date().toLocaleDateString()
+    );
+
+    return;
+  }
+
+  if(command === "/clear"){
+
+    input.value = "";
+
+    toast("Command cleared");
+
+    return;
+  }
+
+  if(command === "/help"){
+
+    alert(
+`NEXUS COMMANDS
+
+/projects
+/tasks
+/tools
+/notes
+/focus
+/github
+/orbit
+/nexus
+/portfolio
+/dussehra
+/time
+/date
+/clear`
+    );
+
+    return;
+  }
+
+  toast("Unknown command — try /help");
+
 }
 
 
-document
-  .getElementById("commandInput")
-  .addEventListener("keydown",e=>{
-
-    if(e.key==="Enter"){
-      executeCommand();
-    }
-
-  });
-
-
 /* =========================
-   TOAST
+   ACTIVITY
 ========================= */
 
-let toastTimeout;
+function addActivity(message){
 
-function toast(message){
+  const list =
+    document.getElementById("activityList");
 
-  const el=document.getElementById("toast");
+  const item =
+    document.createElement("div");
 
-  el.textContent=message;
-  el.classList.add("show");
+  item.className = "activity-item";
 
-  clearTimeout(toastTimeout);
+  item.innerHTML = `
+    <div class="activity-dot"></div>
+    <div>
+      <strong>${escapeHTML(message)}</strong>
+      <small>Just now</small>
+    </div>
+  `;
 
-  toastTimeout=setTimeout(()=>{
-    el.classList.remove("show");
-  },1800);
+  list.prepend(item);
+
+  while(list.children.length > 5){
+    list.lastElementChild.remove();
+  }
+
 }
 
 
 /* =========================
-   KEYBOARD SHORTCUTS
+   FULLSCREEN
+========================= */
+
+function openFullscreen(){
+
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen?.();
+  }else{
+    document.exitFullscreen?.();
+  }
+
+}
+
+
+/* =========================
+   KEYBOARD SHORTCUT
 ========================= */
 
 document.addEventListener("keydown",e=>{
 
-  if(e.key==="Escape"){
-    closeNotes();
-  }
-
-  if(e.ctrlKey && e.shiftKey &&
-     e.key.toLowerCase()==="n"){
+  if(e.ctrlKey && e.key === "k"){
 
     e.preventDefault();
-    openNotes();
+
+    document
+      .getElementById("commandInput")
+      .focus();
+
   }
 
-  if(e.ctrlKey && e.shiftKey &&
-     e.key.toLowerCase()==="f"){
+  if(e.key === "Escape"){
 
-    e.preventDefault();
-    startTimer();
+    closeModal();
+
   }
 
 });
 
 
-renderTimer();
+/* =========================
+   WELCOME
+========================= */
+
+setTimeout(()=>{
+  toast("Nexus is ready ⚡");
+},800);
 
 </script>
 
